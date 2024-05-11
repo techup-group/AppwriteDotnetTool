@@ -1,4 +1,4 @@
-﻿using HandBAppwriteDDL.Business;
+﻿using AppwriteClient;
 using Microsoft.Extensions.Configuration;
 
 internal class Program

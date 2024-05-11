@@ -1,4 +1,6 @@
-﻿namespace AppwriteClient.DTOs
+﻿using Appwrite.Enums;
+
+namespace AppwriteClient.DTOs
 {
     public class AttributeDTO
     {
@@ -89,11 +91,11 @@
         {
            
             public string RelatedCollectionId { get; set; }
-            public string Type { get; set; }
+            public RelationshipType Type { get; set; }
             public bool TwoWay { get; set; }
             public string Key { get; set; }
             public string TwoWayKey { get; set; }
-            public string OnDelete { get; set; }
+            public RelationMutate? OnDelete { get; set; }
         }
     }
 }

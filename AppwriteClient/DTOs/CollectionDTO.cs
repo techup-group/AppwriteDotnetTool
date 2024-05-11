@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using static AppwriteClient.DTOs.AttributeDTO;
 
-namespace HandBAppwriteDDL.Business.DTOs
+namespace AppwriteClient.DTOs
 {
     public class CollectionDTO
     {

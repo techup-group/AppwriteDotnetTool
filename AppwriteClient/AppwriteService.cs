@@ -1,11 +1,12 @@
 ﻿using Appwrite;
+using Appwrite.Enums;
 using Appwrite.Models;
 using Appwrite.Services;
-using HandBAppwriteDDL.Business.DTOs;
+using AppwriteClient.DTOs;
 using Microsoft.Extensions.Configuration;
 using static AppwriteClient.DTOs.AttributeDTO;
 
-namespace HandBAppwriteDDL.Business
+namespace AppwriteClient
 {
     public class AppwriteService
     {
