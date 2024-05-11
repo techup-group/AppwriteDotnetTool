@@ -1,0 +1,243 @@
+{
+  "DatabaseName": "THHI.HousingInventory",
+  "Collections": [
+    {
+      "CollectionId": "Address",
+      "Name": "Address",
+      "StringAttributes": [
+        {
+          "Key": "Id",
+          "Size": 100,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "StreetAddress1",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "StreetAddress2",
+          "Size": 50,
+          "Required": false,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "City",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "State",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "Zip",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "County",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        }
+      ]
+    },
+    {
+      "CollectionId": "Person",
+      "Name": "Person",
+      "StringAttributes": [
+        {
+          "Key": "FirstName",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "LastName",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "Email",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false
+        },
+        {
+          "Key": "Phone",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false
+        },
+        {
+          "Key": "AccountId",
+          "Size": 100,
+          "Required": true,
+          "Default": null,
+          "Array": false
+        }
+      ],
+      "RelationshipAttributes": [
+        {
+          "RelatedCollectionId": "Address",
+          "Type": "oneToOne",
+          "TwoWay": false,
+          "Key": "AddressId",
+          "TwoWayKey": "Id",
+          "OnDelete": "cascade"
+        }
+      ]
+    },
+    {
+      "CollectionId": "Listings",
+      "Name": "Listings",
+      "StringAttributes": [
+        {
+          "Key": "Title",
+          "Size": 100,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "Description",
+          "Size": 500,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "Location",
+          "Size": 100,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        }
+      ],
+      "IntegerAttributes": [
+        {
+          "Key": "Price",
+          "Required": true,
+          "Min": 0,
+          "Max": 1000000,
+          "Default": null,
+          "Array": false
+        },
+        {
+          "Key": "Bedrooms",
+          "Required": true,
+          "Min": 1,
+          "Max": 10,
+          "Default": null,
+          "Array": false
+        }
+      ],
+      "BooleanAttributes": [
+        {
+          "Key": "PetsAllowed",
+          "Required": false,
+          "Default": false,
+          "Array": false
+        },
+        {
+          "Key": "ParkingAvailable",
+          "Required": false,
+          "Default": false,
+          "Array": false
+        }
+      ],
+      "DatetimeAttributes": [
+        {
+          "Key": "AvailableDate",
+          "Required": false,
+          "Default": null,
+          "Array": false
+        }
+      ],
+      "EnumAttributes": [
+        {
+          "Key": "HousingType",
+          "Required": false,
+          "Default": null,
+          "Array": false,
+          "Elements": [
+            "Apt",
+            "House"
+          ]
+
+        }
+      ]
+    },
+    {
+      
+      "CollectionId": "Users",
+      "Name": "Users",
+      "StringAttributes": [
+        {
+          "Key": "FirstName",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "LastName",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false,
+          "Encrypt": false
+        },
+        {
+          "Key": "Email",
+          "Size": 50,
+          "Required": true,
+          "Default": null,
+          "Array": false
+        }
+      ],
+      "RelationshipAttributes": [
+        {
+          "RelatedCollectionId": "Listings",
+          "Type": "oneToMany",
+          "TwoWay": true,
+          "Key": "Listings",
+          "TwoWayKey": "UserId",
+          "OnDelete": "cascade"
+        }
+      ]
+    }
+  ]
+}
