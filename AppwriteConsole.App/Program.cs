@@ -1,5 +1,10 @@
 ﻿using AppwriteClient;
+using AppwriteClient.DTOs;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using static AppwriteClient.DTOs.AttributeDTO;
 
 internal class Program
 {
@@ -20,7 +25,12 @@ internal class Program
         Console.WriteLine($"Setting1: {setting1}");
         Console.WriteLine($"Setting2: {setting2}");
 
-        AppwriteService _service = new(configuration);
+
+        string appPath = Directory.GetCurrentDirectory();
+        string projectPath = Directory.GetParent(appPath).Parent.Parent.FullName;
+        Directory.SetCurrentDirectory($"{projectPath}\\DDL");
+        string json = File.ReadAllText($"{Directory.GetCurrentDirectory()}\\housingsearch.json");
+        SeedDatabaseDTO? model = JsonConvert.DeserializeObject<SeedDatabaseDTO>(json);
 
         /*
         * TODO: Validate that a database doesnt already exist

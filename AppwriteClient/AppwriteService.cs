@@ -152,9 +152,8 @@ namespace AppwriteClient
         {
             foreach (var attribute in attributeList)
             {
-                var createdAttribute = await databaseClient.CreateRelationshipAttribute(databaseId, collectionId, attribute.RelatedCollectionId, attribute.Type, attribute.TwoWay, attribute.Key, attribute.TwoWayKey, attribute.OnDelete);
+                var createdAttribute = await databaseClient.CreateRelationshipAttribute(databaseId, collectionId, attribute.RelatedCollectionId, RelationshipAttribute.ToRelationsipType(attribute.Type), attribute.TwoWay, attribute.Key, attribute.TwoWayKey, RelationshipAttribute.ToRelationMutate(attribute.OnDelete));
                 Console.WriteLine("Created Attribute: " + createdAttribute.Key);
-
             }
 
         }
