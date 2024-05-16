@@ -1,0 +1,12 @@
+{
+  "name": "C# (.NET 6)",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:6.0",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csdevkit",
+        "patbenatar.advanced-new-file"
+      ]
+    }
+  }
+}
