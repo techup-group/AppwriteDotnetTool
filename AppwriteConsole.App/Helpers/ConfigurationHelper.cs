@@ -4,7 +4,7 @@ namespace Helpers;
 
 class ConfigurationHelper
 {
-  public IConfiguration Configuration { get; private set; }
+  private readonly IConfiguration _configuration;
 
   public ConfigurationHelper(string environmentName = "")
   {
@@ -13,18 +13,18 @@ class ConfigurationHelper
       : environmentName;
     var builder = new ConfigurationBuilder().SetBasePath(AppDomain.CurrentDomain.BaseDirectory).AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
             .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true);
-    Configuration = builder.Build();
+    _configuration = builder.Build();
   }
-  public void PrintConfiguration()
+  public void PrintAppSettings()
   {
-    foreach (var entry in Configuration.AsEnumerable())
+    foreach (var entry in _configuration.AsEnumerable())
     {
       Console.WriteLine($"{entry.Key}: {entry.Value}");
     }
   }
-  public string GetValue(string key)
+  public string GetSetting(string key)
   {
-    return Configuration[key];
+    return _configuration[key];
   }
 }
 

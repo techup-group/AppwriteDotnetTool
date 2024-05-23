@@ -13,7 +13,7 @@ internal class Program
     {
         ConfigurationHelper config = new ConfigurationHelper();
 
-        config.PrintConfiguration();
+        config.PrintAppSettings();
 
 
         /*
