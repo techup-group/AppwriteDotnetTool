@@ -43,4 +43,29 @@ public class UserSelection
       }
     }
   }
+
+  public static bool GetBooleanAnswer(string message)
+  {
+    while (true)
+    {
+      Console.Write(message + " (y/n): ");
+      var response = Console.ReadKey().Key;
+
+      if (response == ConsoleKey.Y)
+      {
+        Console.WriteLine();
+        return true;
+      }
+      else if (response == ConsoleKey.N)
+      {
+        Console.WriteLine();
+        return false;
+      }
+      else
+      {
+        Console.WriteLine();
+        Console.WriteLine("Invalid input. Please enter 'y' for yes or 'n' for no.");
+      }
+    }
+  }
 }

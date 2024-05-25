@@ -15,30 +15,55 @@ internal class Program
 
         AppwriteService appwriteService = new AppwriteService(configHelper.GetSettings());
 
-        var databaseResponse = await appwriteService.GetDatabase(configHelper.GetSetting("DATABASE_ID"));
-        // // var response = await appwriteService.GetDatabase("INVALID_ID");
+        var databaseId = configHelper.GetSetting("DATABASE_ID");
+
+        var continueResponse = UserSelection.GetBooleanAnswer($"Retrieve database '{databaseId}'?");
+
+        if (!continueResponse)
+        {
+            Environment.Exit(0);
+        }
+
+        var databaseResponse = await appwriteService.GetDatabase(databaseId);
 
         if (databaseResponse.Error != null)
         {
-            Console.WriteLine($"Error: {databaseResponse.Error}");
-            Environment.Exit(1);
+            Console.WriteLine($"Database '{databaseId}' does not exist.");
         }
-
-        var database = databaseResponse.Result;
-
-        var collectionsResponse = await appwriteService.GetCollections(database);
-
-        if (collectionsResponse.Error != null)
+        else
         {
-            Console.WriteLine($"Error: {collectionsResponse.Error}");
-            Environment.Exit(1);
-        }
+            var database = databaseResponse.Result;
 
-        Console.WriteLine($"Total collections: {collectionsResponse.Result.Total}");
+            var collectionsResponse = await appwriteService.GetCollections(database);
 
-        foreach (var collection in collectionsResponse.Result.Collections)
-        {
-            Console.WriteLine($"Collection ID: {collection.Id}, Name: {collection.Name}");
+            if (collectionsResponse.Error != null)
+            {
+                Console.WriteLine($"Error: {collectionsResponse.Error}");
+            }
+            else
+            {
+                var collectionCount = collectionsResponse.Result.Total;
+
+                if (collectionCount == 0)
+                {
+                    Console.WriteLine($"Database '{databaseId}' is empty.");
+                }
+                else
+                {
+                    Console.WriteLine($"Database '{databaseId}' exists and has {collectionCount} collection(s).");
+
+                    var operateOnCollectionResponse = UserSelection.GetBooleanAnswer("Would you like to operate on a collection?");
+
+                    if (operateOnCollectionResponse)
+                    {
+                        var collections = collectionsResponse.Result.Collections.Select(c => c.Name).ToList();
+
+                        var selectedCollection = UserSelection.GetSelection(collections, "Select a collection:");
+
+                        Console.WriteLine($"You selected: {selectedCollection}");
+                    }
+                }
+            }
         }
 
         /*
