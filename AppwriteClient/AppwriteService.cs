@@ -1,4 +1,5 @@
-﻿using Appwrite;
+﻿using System.Net;
+using Appwrite;
 using Appwrite.Enums;
 using Appwrite.Models;
 using Appwrite.Services;
@@ -20,6 +21,11 @@ namespace AppwriteClient
                    .SetProject(_config["PROJECT_KEY"])
                    .SetKey(_config["APPWRITE_KEY"]);
             databaseClient = new Databases(_client);
+        }
+
+        public async Task<Database> GetDatabase(string databaseId)
+        {
+            return await databaseClient.Get(databaseId);
         }
 
         public async Task CreateCollections(string databaseId, List<CollectionDTO> collectionList)
