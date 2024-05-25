@@ -23,17 +23,35 @@ namespace AppwriteClient
             databaseClient = new Databases(_client);
         }
 
-        public async Task<DatabaseResponse> GetDatabase(string databaseId)
+        public async Task<DatabaseResponse<Database>> GetDatabase(string databaseId)
         {
             try
             {
                 var result = await databaseClient.Get(databaseId);
-                return new DatabaseResponse { Result = result, Error = null };
+                return new DatabaseResponse<Database> { Result = result, Error = null };
             }
             catch (AppwriteException ex)
             {
-                return new DatabaseResponse { Result = null, Error = ex.Message };
+                return new DatabaseResponse<Database> { Result = null, Error = ex.Message };
             }
+        }
+
+        public async Task<DatabaseResponse<CollectionList>> GetCollections(string databaseId)
+        {
+            try
+            {
+                var result = await databaseClient.ListCollections(databaseId);
+                return new DatabaseResponse<CollectionList> { Result = result, Error = null };
+            }
+            catch (AppwriteException ex)
+            {
+                return new DatabaseResponse<CollectionList> { Result = null, Error = ex.Message };
+            }
+        }
+
+        public async Task<DatabaseResponse<CollectionList>> GetCollections(Database database)
+        {
+            return await GetCollections(database.Id);
         }
 
         public async Task CreateCollections(string databaseId, List<CollectionDTO> collectionList)
@@ -243,9 +261,9 @@ namespace AppwriteClient
         //}
     }
 
-    public class DatabaseResponse
+    public class DatabaseResponse<T>
     {
-        public Database Result { get; set; }
+        public T Result { get; set; }
         public string Error { get; set; }
     }
 }

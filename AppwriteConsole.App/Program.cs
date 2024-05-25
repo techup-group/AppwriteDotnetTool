@@ -15,16 +15,32 @@ internal class Program
 
         AppwriteService appwriteService = new AppwriteService(configHelper.GetSettings());
 
-        var response = await appwriteService.GetDatabase(configHelper.GetSetting("DATABASE_ID"));
-        // var response = await appwriteService.GetDatabase("INVALID_ID");
+        var databaseResponse = await appwriteService.GetDatabase(configHelper.GetSetting("DATABASE_ID"));
+        // // var response = await appwriteService.GetDatabase("INVALID_ID");
 
-        if (response.Error != null)
+        if (databaseResponse.Error != null)
         {
-            Console.WriteLine($"Error: {response.Error}");
+            Console.WriteLine($"Error: {databaseResponse.Error}");
             Environment.Exit(1);
         }
 
-        Console.WriteLine(JsonSerializer.Serialize(response.Result));
+        var database = databaseResponse.Result;
+
+        var collectionsResponse = await appwriteService.GetCollections(database);
+
+        if (collectionsResponse.Error != null)
+        {
+            Console.WriteLine($"Error: {collectionsResponse.Error}");
+            Environment.Exit(1);
+        }
+
+        Console.WriteLine($"Total collections: {collectionsResponse.Result.Total}");
+
+        foreach (var collection in collectionsResponse.Result.Collections)
+        {
+            Console.WriteLine($"Collection ID: {collection.Id}, Name: {collection.Name}");
+        }
+
         /*
         * TODO: Validate that a database doesnt already exist
         * TODO: Create Backup
