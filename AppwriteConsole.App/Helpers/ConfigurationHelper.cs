@@ -15,7 +15,7 @@ class ConfigurationHelper
             .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true);
     _configuration = builder.Build();
   }
-  public void PrintAppSettings()
+  public void PrintSettings()
   {
     foreach (var entry in _configuration.AsEnumerable())
     {
@@ -25,6 +25,10 @@ class ConfigurationHelper
   public string GetSetting(string key)
   {
     return _configuration[key];
+  }
+  public IConfiguration GetSettings()
+  {
+    return _configuration;
   }
 }
 
