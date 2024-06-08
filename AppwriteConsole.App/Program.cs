@@ -45,42 +45,41 @@ internal class Program
         if (databaseResponse.Error != null)
         {
             Console.WriteLine($"Database '{databaseId}' does not exist.");
+            return;
         }
-        else
+
+        var database = databaseResponse.Result;
+
+        var collectionsResponse = await appwriteService.GetCollections(database);
+
+        if (collectionsResponse.Error != null)
         {
-            var database = databaseResponse.Result;
-
-            var collectionsResponse = await appwriteService.GetCollections(database);
-
-            if (collectionsResponse.Error != null)
-            {
-                Console.WriteLine($"Error: {collectionsResponse.Error}");
-            }
-            else
-            {
-                var collectionCount = collectionsResponse.Result.Total;
-
-                if (collectionCount == 0)
-                {
-                    Console.WriteLine($"Database '{databaseId}' is empty.");
-                }
-                else
-                {
-                    Console.WriteLine($"Database '{databaseId}' exists and has {collectionCount} collection(s).");
-
-                    var operateOnCollectionResponse = UserSelection.GetBooleanAnswer("Would you like to operate on a collection?");
-
-                    if (operateOnCollectionResponse)
-                    {
-                        var collections = collectionsResponse.Result.Collections.Select(c => c.Name).ToList();
-
-                        var selectedCollection = UserSelection.GetSelection(collections, "Select a collection:");
-
-                        Console.WriteLine($"You selected: {selectedCollection}");
-                    }
-                }
-            }
+            Console.WriteLine($"Error: {collectionsResponse.Error}");
+            return;
         }
+
+        var collectionCount = collectionsResponse.Result.Total;
+
+        if (collectionCount == 0)
+        {
+            Console.WriteLine($"Database '{databaseId}' is empty.");
+            return;
+        }
+
+        Console.WriteLine($"Database '{databaseId}' exists and has {collectionCount} collection(s).");
+
+        var operateOnCollectionResponse = UserSelection.GetBooleanAnswer("Would you like to operate on a collection?");
+
+        if (!operateOnCollectionResponse)
+        {
+            return;
+        }
+
+        var collections = collectionsResponse.Result.Collections.Select(c => c.Name).ToList();
+
+        var selectedCollection = UserSelection.GetSelection(collections, "Select a collection:");
+
+        Console.WriteLine($"You selected: {selectedCollection}");
 
         /*
         * TODO: Validate that a database doesnt already exist
