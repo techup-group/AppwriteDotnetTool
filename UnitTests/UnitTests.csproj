@@ -21,4 +21,7 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AppwriteConsole.App\AppwriteConsole.App.csproj" />
+  </ItemGroup>
 </Project>

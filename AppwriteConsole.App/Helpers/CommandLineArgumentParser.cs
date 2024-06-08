@@ -1,6 +1,6 @@
 namespace Helpers;
 
-class CommandLineArgumentParser
+public class CommandLineArgumentParser
 {
   public static bool HasArgument(string[] args, string argumentName)
   {
