@@ -3,69 +3,80 @@ using System.Collections.Generic;
 
 public class UserSelection
 {
-  public static string GetSelection(IEnumerable<string> options, string prompt = "Select an option:")
-  {
-    var optionList = options.ToList();
-    var selectedIndex = 0;
-
-    while (true)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="options"></param>
+    /// <param name="prompt"></param>
+    /// <returns></returns>
+    public static string GetSelection(IEnumerable<string> options, string prompt = "Select an option:")
     {
-      Console.Clear();
-      Console.WriteLine(prompt);
+        var optionList = options.ToList();
+        var selectedIndex = 0;
 
-      for (int i = 0; i < optionList.Count; i++)
-      {
-        if (i == selectedIndex)
+        while (true)
         {
-          Console.ForegroundColor = ConsoleColor.Green;
-          Console.WriteLine($"> {optionList[i]}");
-          Console.ResetColor();
-        }
-        else
-        {
-          Console.WriteLine($"  {optionList[i]}");
-        }
-      }
+            Console.Clear();
+            Console.WriteLine(prompt);
 
-      var key = Console.ReadKey(true).Key;
+            for (int i = 0; i < optionList.Count; i++)
+            {
+                if (i == selectedIndex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"> {optionList[i]}");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.WriteLine($"  {optionList[i]}");
+                }
+            }
 
-      if (key == ConsoleKey.DownArrow)
-      {
-        selectedIndex = Math.Min(selectedIndex + 1, optionList.Count - 1);
-      }
-      else if (key == ConsoleKey.UpArrow)
-      {
-        selectedIndex = Math.Max(selectedIndex - 1, 0);
-      }
-      else if (key == ConsoleKey.Enter)
-      {
-        return optionList[selectedIndex];
-      }
+            var key = Console.ReadKey(true).Key;
+
+            if (key == ConsoleKey.DownArrow)
+            {
+                selectedIndex = Math.Min(selectedIndex + 1, optionList.Count - 1);
+            }
+            else if (key == ConsoleKey.UpArrow)
+            {
+                selectedIndex = Math.Max(selectedIndex - 1, 0);
+            }
+            else if (key == ConsoleKey.Enter)
+            {
+                return optionList[selectedIndex];
+            }
+        }
     }
-  }
 
-  public static bool GetBooleanAnswer(string message)
-  {
-    while (true)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    public static bool GetBooleanAnswer(string message)
     {
-      Console.Write(message + " (y/n): ");
-      var response = Console.ReadKey().Key;
+        while (true)
+        {
+            Console.Write(message + " (y/n): ");
+            var response = Console.ReadKey().Key;
 
-      if (response == ConsoleKey.Y)
-      {
-        Console.WriteLine();
-        return true;
-      }
-      else if (response == ConsoleKey.N)
-      {
-        Console.WriteLine();
-        return false;
-      }
-      else
-      {
-        Console.WriteLine();
-        Console.WriteLine("Invalid input. Please enter 'y' for yes or 'n' for no.");
-      }
+            if (response == ConsoleKey.Y)
+            {
+                Console.WriteLine();
+                return true;
+            }
+            else if (response == ConsoleKey.N)
+            {
+                Console.WriteLine();
+                return false;
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine("Invalid input. Please enter 'y' for yes or 'n' for no.");
+            }
+        }
     }
-  }
 }

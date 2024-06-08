@@ -78,6 +78,13 @@ internal class Program
         */
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="task"></param>
+    /// <param name="exitMessage"></param>
+    /// <returns></returns>
     private static async Task<T> ExecuteOrExitOnError<T>(Task<DatabaseResponse<T>> task, string exitMessage = "")
     {
         var response = await task;
