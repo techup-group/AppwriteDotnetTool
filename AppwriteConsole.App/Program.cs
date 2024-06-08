@@ -9,9 +9,25 @@ using Helpers;
 
 internal class Program
 {
-    private static async Task Main()
+    private static async Task Main(string[] args)
     {
-        ConfigurationHelper configHelper = new ConfigurationHelper();
+        bool skipConfirmation = CommandLineArgumentParser.HasArgument(args, "--skip-confirmation");
+        string environmentName = CommandLineArgumentParser.GetArgumentValue(args, "--environment");
+
+        ConfigurationHelper configHelper = new ConfigurationHelper(environmentName);
+
+        if (!skipConfirmation)
+        {
+            var confirm = UserSelection.GetBooleanAnswer("Would you like to confirm application settings?");
+            if (confirm)
+            {
+                configHelper.PrintSettings();
+            }
+        }
+        else
+        {
+            Console.WriteLine("Skipping confirmation of application settings.");
+        }
 
         AppwriteService appwriteService = new AppwriteService(configHelper.GetSettings());
 
