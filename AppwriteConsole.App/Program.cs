@@ -40,33 +40,19 @@ internal class Program
             Environment.Exit(0);
         }
 
-        var databaseResponse = await appwriteService.GetDatabase(databaseId);
+        var database = await ExecuteOrExitOnError(appwriteService.GetDatabase(databaseId), $"Database '{databaseId}' does not exist.");
 
-        if (databaseResponse.Error != null)
-        {
-            Console.WriteLine($"Database '{databaseId}' does not exist.");
-            return;
-        }
+        var collectionList = await ExecuteOrExitOnError(appwriteService.GetCollections(database));
 
-        var database = databaseResponse.Result;
+        var collectionListCount = collectionList.Total;
 
-        var collectionsResponse = await appwriteService.GetCollections(database);
-
-        if (collectionsResponse.Error != null)
-        {
-            Console.WriteLine($"Error: {collectionsResponse.Error}");
-            return;
-        }
-
-        var collectionCount = collectionsResponse.Result.Total;
-
-        if (collectionCount == 0)
+        if (collectionListCount == 0)
         {
             Console.WriteLine($"Database '{databaseId}' is empty.");
             return;
         }
 
-        Console.WriteLine($"Database '{databaseId}' exists and has {collectionCount} collection(s).");
+        Console.WriteLine($"Database '{databaseId}' exists and has {collectionListCount} collection(s).");
 
         var operateOnCollectionResponse = UserSelection.GetBooleanAnswer("Would you like to operate on a collection?");
 
@@ -75,9 +61,9 @@ internal class Program
             return;
         }
 
-        var collections = collectionsResponse.Result.Collections.Select(c => c.Name).ToList();
+        var collectionNames = collectionList.Collections.Select(c => c.Name).ToList();
 
-        var selectedCollection = UserSelection.GetSelection(collections, "Select a collection:");
+        var selectedCollection = UserSelection.GetSelection(collectionNames, "Select a collection:");
 
         Console.WriteLine($"You selected: {selectedCollection}");
 
@@ -90,5 +76,17 @@ internal class Program
         * TODO: Add required user prompts
         * TODO: Write unit test for code
         */
+    }
+
+    private static async Task<T> ExecuteOrExitOnError<T>(Task<DatabaseResponse<T>> task, string exitMessage = "")
+    {
+        var response = await task;
+        if (response.Error != null)
+        {
+            string message = string.IsNullOrEmpty(exitMessage) ? $"Error: {response.Error}" : exitMessage;
+            Console.WriteLine(message);
+            Environment.Exit(1);
+        }
+        return response.Result;
     }
 }
