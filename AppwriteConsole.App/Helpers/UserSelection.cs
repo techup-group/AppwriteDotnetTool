@@ -63,20 +63,23 @@ public class UserSelection
         while (true)
         {
             Console.Write(message + " (y/n): ");
-            var response = Console.ReadLine().Trim();
+            var response = Console.ReadLine();
 
-            if (response.ToLower() == "y")
+            if (response != null)
             {
-                return true;
+                response = response.Trim().ToLower();
+
+                if (response == "y")
+                {
+                    return true;
+                }
+                else if (response == "n")
+                {
+                    return false;
+                }
             }
-            else if (response.ToLower() == "n")
-            {
-                return false;
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please enter 'y' for yes or 'n' for no.");
-            }
+
+            Console.WriteLine("Invalid input. Please enter 'y' for yes or 'n' for no.");
         }
     }
 }
