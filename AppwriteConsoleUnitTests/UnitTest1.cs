@@ -1,4 +1,4 @@
-namespace UnitTests;
+namespace AppwriteConsoleUnitTests;
 
 public class UnitTest1
 {
