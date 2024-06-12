@@ -79,12 +79,12 @@ internal class Program
     }
 
     /// <summary>
-    /// 
+    /// Executes a task and exits the application if the task returns an error.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="task"></param>
-    /// <param name="exitMessage"></param>
-    /// <returns></returns>
+    /// <typeparam name="T">The type of the result returned by the task.</typeparam>
+    /// <param name="task">The task to be executed.</param>
+    /// <param name="exitMessage">The message to be displayed if the task returns an error. If not provided, a default error message will be displayed.</param>
+    /// <returns>The result of the task if it is executed successfully.</returns>
     private static async Task<T> ExecuteOrExitOnError<T>(Task<DatabaseResponse<T>> task, string exitMessage = "")
     {
         var response = await task;

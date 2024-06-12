@@ -4,16 +4,17 @@ using System.Collections.Generic;
 public class UserSelection
 {
     /// <summary>
-    /// 
+    /// Displays a list of options and allows the user to select one using the arrow keys and Enter.
     /// </summary>
-    /// <param name="options"></param>
-    /// <param name="prompt"></param>
-    /// <returns></returns>
+    /// <param name="options">The list of options to display.</param>
+    /// <param name="prompt">The prompt to display above the options.</param>
+    /// <returns>The selected option.</returns>
     public static string GetSelection(IEnumerable<string> options, string prompt = "Select an option:")
     {
         var optionList = options.ToList();
         var selectedIndex = 0;
 
+        // Loop until the user selects an option using the Enter key
         while (true)
         {
             Console.Clear();
@@ -51,10 +52,10 @@ public class UserSelection
     }
 
     /// <summary>
-    /// 
+    /// Prompts the user to answer a yes/no question and returns the result.
     /// </summary>
-    /// <param name="message"></param>
-    /// <returns></returns>
+    /// <param name="message">The prompt to display to the user.</param>
+    /// <returns>True if the user answers yes, false otherwise.</returns>
     public static bool GetBooleanAnswer(string message)
     {
         while (true)

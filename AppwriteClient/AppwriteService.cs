@@ -23,6 +23,11 @@ namespace AppwriteClient
             databaseClient = new Databases(_client);
         }
 
+        /// <summary>
+        /// Retrieves a database by its ID.
+        /// </summary>
+        /// <param name="databaseId">The ID of the database to retrieve.</param>
+        /// <returns>A <see cref="DatabaseResponse{Database}"/> object containing the retrieved database or an error message.</returns>
         public async Task<DatabaseResponse<Database>> GetDatabase(string databaseId)
         {
             try
@@ -261,9 +266,20 @@ namespace AppwriteClient
         //}
     }
 
+    /// <summary>
+    /// Represents a response from a database operation, containing either a result or an error message.
+    /// </summary>
+    /// <typeparam name="T">The type of the result.</typeparam>
     public class DatabaseResponse<T>
     {
+        /// <summary>
+        /// The result of the database operation, or null if an error occurred.
+        /// </summary>
         public T Result { get; set; }
+
+        /// <summary>
+        /// The error message if an error occurred, or null if the operation was successful.
+        /// </summary>
         public string Error { get; set; }
     }
 }
