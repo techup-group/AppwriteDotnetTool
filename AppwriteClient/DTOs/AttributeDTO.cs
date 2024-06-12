@@ -51,7 +51,7 @@ namespace AppwriteClient.DTOs
 
         public class IntegerAttribute
         {
-          
+
             public string Key { get; set; }
             public bool Required { get; set; }
             public int Min { get; set; }
@@ -62,7 +62,7 @@ namespace AppwriteClient.DTOs
 
         public class FloatAttribute
         {
-           
+
             public string Key { get; set; }
             public bool Required { get; set; }
             public float Min { get; set; }
@@ -73,7 +73,7 @@ namespace AppwriteClient.DTOs
 
         public class BooleanAttribute
         {
-           
+
             public string Key { get; set; }
             public bool Required { get; set; }
             public bool Default { get; set; }
@@ -82,7 +82,7 @@ namespace AppwriteClient.DTOs
 
         public class DatetimeAttribute
         {
-           
+
             public string Key { get; set; }
             public bool Required { get; set; }
             public string Default { get; set; }
@@ -91,9 +91,9 @@ namespace AppwriteClient.DTOs
 
         public class RelationshipAttribute
         {
-           
+
             public string RelatedCollectionId { get; set; }
-            public string Type { get;  set; }
+            public string Type { get; set; }
             public static RelationshipType ToRelationsipType(string relationshipType) => relationshipType switch
             {
                 _ when relationshipType == RelationshipType.OneToOne.Value => RelationshipType.OneToOne,
@@ -104,7 +104,7 @@ namespace AppwriteClient.DTOs
             public bool TwoWay { get; set; }
             public string Key { get; set; }
             public string TwoWayKey { get; set; }
-            public string OnDelete { get;  set; }
+            public string OnDelete { get; set; }
             public static RelationMutate? ToRelationMutate(string relationMutate) => relationMutate switch
             {
                 _ when relationMutate == RelationMutate.Cascade.Value => RelationMutate.Cascade,
