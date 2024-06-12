@@ -27,10 +27,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nuget-
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ./AppwriteConsole.App/AppwriteConsole.App.sln
     - name: Build
-      run: dotnet build --no-restore
+      run: dotnet build ./AppwriteConsole.App/AppwriteConsole.App.sln --no-restore 
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test ./AppwriteConsole.App/AppwriteConsole.App.sln --no-build --verbosity normal
     - name: Run Static Code Analysis
       run: dotnet tool install --global dotnet-format && dotnet format --check
