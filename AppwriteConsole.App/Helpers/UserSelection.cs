@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+namespace Helpers;
+
 public class UserSelection
 {
     /// <summary>
@@ -61,21 +63,18 @@ public class UserSelection
         while (true)
         {
             Console.Write(message + " (y/n): ");
-            var response = Console.ReadKey().Key;
+            var response = Console.ReadLine().Trim();
 
-            if (response == ConsoleKey.Y)
+            if (response.ToLower() == "y")
             {
-                Console.WriteLine();
                 return true;
             }
-            else if (response == ConsoleKey.N)
+            else if (response.ToLower() == "n")
             {
-                Console.WriteLine();
                 return false;
             }
             else
             {
-                Console.WriteLine();
                 Console.WriteLine("Invalid input. Please enter 'y' for yes or 'n' for no.");
             }
         }
