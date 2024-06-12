@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  setup:
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4.1.7
@@ -18,11 +18,6 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-  restore:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4.1.7
     - uses: actions/cache@v4.0.2
       with:
         path: ~/.nuget/packages
@@ -31,25 +26,9 @@ jobs:
           ${{ runner.os }}-nuget-
     - name: Restore dependencies
       run: dotnet restore ./AppwriteConsole.App/AppwriteConsole.App.sln
-  build:
-    needs: restore
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4.1.7
     - name: Build
       run: dotnet build ./AppwriteConsole.App/AppwriteConsole.App.sln --no-restore
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4.1.7
     - name: Test
       run: dotnet test ./AppwriteConsole.App/AppwriteConsole.App.sln --no-build --verbosity normal
-  format:
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4.1.7
     - name: Run Static Code Analysis
       run: dotnet tool install --global dotnet-format && dotnet format ./AppwriteConsole.App/AppwriteConsole.App.sln --check
-      
