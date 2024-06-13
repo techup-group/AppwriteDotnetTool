@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppwriteConsole.App", "AppwriteConsole.App.csproj", "{A2E2C297-1081-435D-B480-0E14EC8A0411}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppwriteConsole.App", "AppwriteConsole.App.csproj", "{A2E2C297-1081-435D-B480-0E14EC8A0411}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppwriteClient", "..\AppwriteClient\AppwriteClient.csproj", "{E94FC2CB-F6B1-4EF7-BF6A-863F5F212A1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppwriteClient", "..\AppwriteClient\AppwriteClient.csproj", "{E94FC2CB-F6B1-4EF7-BF6A-863F5F212A1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppwriteConsoleUnitTests", "..\AppwriteConsoleUnitTests\AppwriteConsoleUnitTests.csproj", "{B195FF47-5167-4F57-813F-26A52D463A12}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppwriteConsoleUnitTests", "..\AppwriteConsoleUnitTests\AppwriteConsoleUnitTests.csproj", "{B195FF47-5167-4F57-813F-26A52D463A12}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
