@@ -19,7 +19,7 @@ namespace AppwriteClient.DTOs
             RelationshipAttributes = new List<RelationshipAttribute>();
         }
 
-       
+
         public string CollectionId { get; set; }
         public string Name { get; set; }
         public List<StringAttribute> StringAttributes { get; set; }
