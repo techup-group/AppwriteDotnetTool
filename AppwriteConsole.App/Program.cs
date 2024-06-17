@@ -33,6 +33,12 @@ internal class Program
 
         var databaseId = configHelper.GetSetting("DATABASE_ID");
 
+        if (string.IsNullOrEmpty(databaseId))
+        {
+            Console.WriteLine("Database ID is not set.");
+            return;
+        }
+
         var continueResponse = UserSelection.GetBooleanAnswer($"Retrieve database '{databaseId}'?");
 
         if (!continueResponse)
@@ -40,11 +46,44 @@ internal class Program
             Environment.Exit(0);
         }
 
-        var database = await ExecuteOrExitOnError(appwriteService.GetDatabase(databaseId), $"Database '{databaseId}' does not exist.");
+        var databaseResponse = await appwriteService.GetDatabase(databaseId);
 
-        var collectionList = await ExecuteOrExitOnError(appwriteService.GetCollections(database));
+        if (databaseResponse.Result == null)
+        {
+            Console.WriteLine($"Database '{databaseId}' does not exist.");
+            var createDatabaseResponse = UserSelection.GetBooleanAnswer("Would you like to create a new database from the housing search JSON file?");
 
-        var collectionListCount = collectionList.Total;
+            if (!createDatabaseResponse)
+            {
+                return;
+            }
+
+            try
+            {
+                string json = File.ReadAllText(Path.Combine("DDL", "housingsearch.json"));
+                SeedDatabaseDTO? seedDatabaseDTO = JsonSerializer.Deserialize<SeedDatabaseDTO>(json);
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("The housing search JSON file is not valid or present within the 'DDL' directory.");
+                Environment.Exit(1);
+            }
+            catch (JsonException)
+            {
+                Console.WriteLine("The housing search JSON file is not valid or present within the 'DDL' directory.");
+                Environment.Exit(1);
+            }
+
+            Console.WriteLine("Creating database... (Not implemented yet)");
+            // Create the database using the seedDatabaseDTO (Not implemented yet)
+
+            // Fetch the collections of the database after creation
+            databaseResponse = await appwriteService.GetDatabase(databaseId);
+
+        }
+
+        var collectionListResponse = await appwriteService.GetCollections(databaseResponse.Result);
+        var collectionListCount = collectionListResponse.Result.Total;
 
         if (collectionListCount == 0)
         {
@@ -54,18 +93,7 @@ internal class Program
 
         Console.WriteLine($"Database '{databaseId}' exists and has {collectionListCount} collection(s).");
 
-        var operateOnCollectionResponse = UserSelection.GetBooleanAnswer("Would you like to operate on a collection?");
 
-        if (!operateOnCollectionResponse)
-        {
-            return;
-        }
-
-        var collectionNames = collectionList.Collections.Select(c => c.Name).ToList();
-
-        var selectedCollection = UserSelection.GetSelection(collectionNames, "Select a collection:");
-
-        Console.WriteLine($"You selected: {selectedCollection}");
 
         /*
         * TODO: Validate that a database doesnt already exist
