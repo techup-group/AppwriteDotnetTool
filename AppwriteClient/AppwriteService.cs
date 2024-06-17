@@ -23,6 +23,18 @@ namespace AppwriteClient
             databaseClient = new Databases(_client);
         }
 
+        public async Task CreateDatabase(DatabaseDTO databaseDTO)
+        {
+            try
+            {
+                await databaseClient.Create(databaseDTO.DatabaseId, databaseDTO.Name, false);
+            }
+            catch (AppwriteException ex)
+            {
+                throw;
+            }
+        }
+
         /// <summary>
         /// Retrieves a database by its ID.
         /// </summary>

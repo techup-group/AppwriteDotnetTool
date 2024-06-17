@@ -62,6 +62,18 @@ internal class Program
             {
                 string json = File.ReadAllText(Path.Combine("DDL", "housingsearch.json"));
                 SeedDatabaseDTO? seedDatabaseDTO = JsonSerializer.Deserialize<SeedDatabaseDTO>(json);
+
+                if (seedDatabaseDTO == null)
+                {
+                    Console.WriteLine("The housing search JSON file is not valid or present within the 'DDL' directory.");
+                    Environment.Exit(1);
+                }
+
+                Console.WriteLine("Creating database...");
+                await appwriteService.CreateDatabase(new DatabaseDTO { DatabaseId = databaseId, Name = seedDatabaseDTO.DatabaseName });
+
+                // Fetch the collections of the database after creation
+                databaseResponse = await appwriteService.GetDatabase(databaseId);
             }
             catch (FileNotFoundException)
             {
@@ -73,12 +85,6 @@ internal class Program
                 Console.WriteLine("The housing search JSON file is not valid or present within the 'DDL' directory.");
                 Environment.Exit(1);
             }
-
-            Console.WriteLine("Creating database... (Not implemented yet)");
-            // Create the database using the seedDatabaseDTO (Not implemented yet)
-
-            // Fetch the collections of the database after creation
-            databaseResponse = await appwriteService.GetDatabase(databaseId);
 
         }
 
