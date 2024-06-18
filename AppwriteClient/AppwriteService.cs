@@ -80,6 +80,12 @@ namespace AppwriteClient
             }
         }
 
+        /// <summary>
+        /// Creates the attributes for a collection in the Appwrite database.
+        /// </summary>
+        /// <param name="databaseId">The ID of the database.</param>
+        /// <param name="collectionId">The ID of the collection.</param>
+        /// <param name="collection">The collection DTO object.</param>
         private async Task CreateCollectionAttributes(string databaseId, string collectionId, CollectionDTO collection)
         {
             var attributeMap = new Dictionary<Type, Func<Task>>
@@ -98,13 +104,20 @@ namespace AppwriteClient
 
             foreach (var attributeType in attributeMap.Keys)
             {
-                var attributes = collection.GetType().GetProperties()
-                    .Where(p => p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
-                    .Where(p => p.PropertyType.GenericTypeArguments[0] == attributeType)
-                    .Select(p => p.GetValue(collection))
-                    .FirstOrDefault() as IEnumerable<object>;
+                // Get the properties of the collection object that are of type List<T>
+                var listProperties = collection.GetType().GetProperties()
+                    .Where(p => p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>));
 
-                if (attributes != null && attributes.Any())
+                // Filter the properties to only those where the generic type argument is the current attribute type
+                var attributeListProperty = listProperties
+                    .Where(p => p.PropertyType.GenericTypeArguments[0] == attributeType)
+                    .FirstOrDefault();
+
+                // Get the value of the property (which is a list of attribute objects)
+                var attributeList = attributeListProperty?.GetValue(collection) as IEnumerable<object>;
+
+                // If the list of attributes is not null or empty, create the attributes in the Appwrite database
+                if (attributeList != null && attributeList.Any())
                 {
                     await attributeMap[attributeType]();
                 }
