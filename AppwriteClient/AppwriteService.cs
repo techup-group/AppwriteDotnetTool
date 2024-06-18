@@ -76,61 +76,38 @@ namespace AppwriteClient
             foreach (var collection in collectionList)
             {
                 await databaseClient.CreateCollection(databaseId, collection.CollectionId, collection.Name);
-                await CreateCollectionAttributes(databaseId, collection.CollectionId, collection.StringAttributes, collection.EmailAttributes, collection.EnumAttributes, collection.IPAddressAttributes, collection.URLAttributes, collection.IntegerAttributes, collection.FloatAttributes, collection.BooleanAttributes, collection.DatetimeAttributes, collection.RelationshipAttributes);
+                await CreateCollectionAttributes(databaseId, collection.CollectionId, collection);
             }
         }
 
-        private async Task CreateCollectionAttributes(string databaseId, string collectionId, List<StringAttribute> stringAttributes, List<EmailAttribute> emailAttributes, List<EnumAttribute> enumAttributes, List<IPAddressAttribute> iPAddressAttributes, List<URLAttribute> uRLAttributes, List<IntegerAttribute> integerAttributes, List<FloatAttribute> floatAttributes, List<BooleanAttribute> booleanAttributes, List<DatetimeAttribute> datetimeAttributes, List<RelationshipAttribute> relationshipAttributes)
+        private async Task CreateCollectionAttributes(string databaseId, string collectionId, CollectionDTO collection)
         {
+            var attributeMap = new Dictionary<Type, Func<Task>>
+    {
+        { typeof(StringAttribute), () => CreateAttribute(collection.StringAttributes, databaseId, collectionId) },
+        { typeof(EmailAttribute), () => CreateAttribute(collection.EmailAttributes, databaseId, collectionId) },
+        { typeof(EnumAttribute), () => CreateAttribute(collection.EnumAttributes, databaseId, collectionId) },
+        { typeof(IPAddressAttribute), () => CreateAttribute(collection.IPAddressAttributes, databaseId, collectionId) },
+        { typeof(URLAttribute), () => CreateAttribute(collection.URLAttributes, databaseId, collectionId) },
+        { typeof(IntegerAttribute), () => CreateAttribute(collection.IntegerAttributes, databaseId, collectionId) },
+        { typeof(FloatAttribute), () => CreateAttribute(collection.FloatAttributes, databaseId, collectionId) },
+        { typeof(BooleanAttribute), () => CreateAttribute(collection.BooleanAttributes, databaseId, collectionId) },
+        { typeof(DatetimeAttribute), () => CreateAttribute(collection.DatetimeAttributes, databaseId, collectionId) },
+        { typeof(RelationshipAttribute), () => CreateAttribute(collection.RelationshipAttributes, databaseId, collectionId) },
+    };
 
-            if (stringAttributes != null && stringAttributes.Count > 0)
+            foreach (var attributeType in attributeMap.Keys)
             {
-                await CreateAttribute(stringAttributes, databaseId, collectionId);
-            }
+                var attributes = collection.GetType().GetProperties()
+                    .Where(p => p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>))
+                    .Where(p => p.PropertyType.GenericTypeArguments[0] == attributeType)
+                    .Select(p => p.GetValue(collection))
+                    .FirstOrDefault() as IEnumerable<object>;
 
-            if (emailAttributes != null && emailAttributes.Count > 0)
-            {
-                await CreateAttribute(emailAttributes, databaseId, collectionId);
-            }
-
-            if (enumAttributes != null && enumAttributes.Count > 0)
-            {
-                await CreateAttribute(enumAttributes, databaseId, collectionId);
-            }
-
-            if (iPAddressAttributes != null && iPAddressAttributes.Count > 0)
-            {
-                await CreateAttribute(iPAddressAttributes, databaseId, collectionId);
-            }
-
-            if (uRLAttributes != null && uRLAttributes.Count > 0)
-            {
-                await CreateAttribute(uRLAttributes, databaseId, collectionId);
-            }
-
-            if (integerAttributes != null && integerAttributes.Count > 0)
-            {
-                await CreateAttribute(integerAttributes, databaseId, collectionId);
-            }
-
-            if (floatAttributes != null && floatAttributes.Count > 0)
-            {
-                await CreateAttribute(floatAttributes, databaseId, collectionId);
-            }
-
-            if (booleanAttributes != null && booleanAttributes.Count > 0)
-            {
-                await CreateAttribute(booleanAttributes, databaseId, collectionId);
-            }
-
-            if (datetimeAttributes != null && datetimeAttributes.Count > 0)
-            {
-                await CreateAttribute(datetimeAttributes, databaseId, collectionId);
-            }
-
-            if (relationshipAttributes != null && relationshipAttributes.Count > 0)
-            {
-                await CreateAttribute(relationshipAttributes, databaseId, collectionId);
+                if (attributes != null && attributes.Any())
+                {
+                    await attributeMap[attributeType]();
+                }
             }
         }
 

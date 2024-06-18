@@ -72,6 +72,9 @@ internal class Program
                 Console.WriteLine("Creating database...");
                 await appwriteService.CreateDatabase(new DatabaseDTO { DatabaseId = databaseId, Name = seedDatabaseDTO.DatabaseName });
 
+                Console.WriteLine("Creating collections...");
+                await appwriteService.CreateCollections(databaseId, seedDatabaseDTO.Collections);
+
                 // Fetch the collections of the database after creation
                 databaseResponse = await appwriteService.GetDatabase(databaseId);
             }
@@ -130,4 +133,10 @@ internal class Program
         }
         return response.Result;
     }
+}
+
+public class CollectionDTO
+{
+    public string Name { get; set; }
+    public List<string> Attributes { get; set; } // Add this property
 }
