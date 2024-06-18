@@ -100,7 +100,7 @@ internal class Program
             return;
         }
 
-        Console.WriteLine($"Database '{databaseId}' exists and has {collectionListCount} collection(s).");
+        Console.WriteLine($"Database '{databaseId}' has {collectionListCount} collection(s).");
 
 
 
