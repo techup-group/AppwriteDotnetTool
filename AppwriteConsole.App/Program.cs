@@ -134,9 +134,3 @@ internal class Program
         return response.Result;
     }
 }
-
-public class CollectionDTO
-{
-    public string Name { get; set; }
-    public List<string> Attributes { get; set; } // Add this property
-}
