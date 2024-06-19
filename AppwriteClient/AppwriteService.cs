@@ -35,6 +35,18 @@ namespace AppwriteClient
             }
         }
 
+        public async Task DeleteDatabase(string databaseId)
+        {
+            try
+            {
+                await databaseClient.Delete(databaseId);
+            }
+            catch (AppwriteException ex)
+            {
+                throw;
+            }
+        }
+
         /// <summary>
         /// Retrieves a database by its ID.
         /// </summary>

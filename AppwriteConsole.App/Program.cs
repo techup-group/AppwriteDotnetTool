@@ -35,27 +35,31 @@ internal class Program
 
         if (string.IsNullOrEmpty(databaseId))
         {
-            Console.WriteLine("Database ID is not set.");
-            return;
-        }
-
-        var continueResponse = UserSelection.GetBooleanAnswer($"Retrieve database '{databaseId}'?");
-
-        if (!continueResponse)
-        {
-            Environment.Exit(0);
+            Console.WriteLine("Database ID is not set in the app settings.");
+            Environment.Exit(1);
         }
 
         var databaseResponse = await appwriteService.GetDatabase(databaseId);
 
         if (databaseResponse.Result == null)
         {
-            Console.WriteLine($"Database '{databaseId}' does not exist.");
-            var createDatabaseResponse = UserSelection.GetBooleanAnswer("Would you like to create a new database from the housing search JSON file?");
+            Console.WriteLine($"Database '{databaseId}' does not exist within the cloud provider.");
+        }
+        else
+        {
+            Console.WriteLine($"Database '{databaseId}' exists within the cloud provider.");
+        }
 
-            if (!createDatabaseResponse)
+        string resetDatabasePrompt = databaseResponse.Result == null ? "Would you like to create the database from the local schema definition?" : "Would you like to reset the existing database from the local schema definition?";
+
+        var resetDatabaseResponse = UserSelection.GetBooleanAnswer(resetDatabasePrompt);
+
+        if (resetDatabaseResponse)
+        {
+            if (databaseResponse.Result != null)
             {
-                return;
+                Console.WriteLine("Deleting existing database...");
+                await appwriteService.DeleteDatabase(databaseId);
             }
 
             try
@@ -88,31 +92,32 @@ internal class Program
                 Console.WriteLine("The housing search JSON file is not valid or present within the 'DDL' directory.");
                 Environment.Exit(1);
             }
-
         }
 
-        var collectionListResponse = await appwriteService.GetCollections(databaseResponse.Result);
-        var collectionListCount = collectionListResponse.Result.Total;
-
-        if (collectionListCount == 0)
+        if (databaseResponse.Result != null)
         {
-            Console.WriteLine($"Database '{databaseId}' is empty.");
-            return;
+            var collectionListResponse = await appwriteService.GetCollections(databaseResponse.Result);
+            var collectionListCount = collectionListResponse.Result.Total;
+
+            Console.WriteLine($"Database '{databaseId}' has {collectionListCount} collection(s).");
+
+            var operateOnCollectionResponse = UserSelection.GetBooleanAnswer("Would you like to operate on a collection?");
+
+            if (!operateOnCollectionResponse)
+            {
+                return;
+            }
+
+            var collectionNames = collectionListResponse.Result.Collections.Select(c => c.Name).ToList();
+
+            var selectedCollection = UserSelection.GetSelection(collectionNames, "Select a collection:");
+
+            Console.WriteLine($"You selected: {selectedCollection}");
         }
-
-        Console.WriteLine($"Database '{databaseId}' has {collectionListCount} collection(s).");
-
-
-
-        /*
-        * TODO: Validate that a database doesnt already exist
-        * TODO: Create Backup
-        * TODO: Create Database
-        * TODO: Create Collections and Attributes based on file schema
-        * TODO: Add logging for process
-        * TODO: Add required user prompts
-        * TODO: Write unit test for code
-        */
+        else
+        {
+            Console.WriteLine($"Database '{databaseId}' does not exist or has not been reset. No collections to report.");
+        }
     }
 
     /// <summary>
