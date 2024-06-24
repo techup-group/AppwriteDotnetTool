@@ -25,26 +25,12 @@ namespace AppwriteClient
 
         public async Task CreateDatabase(DatabaseDTO databaseDTO)
         {
-            try
-            {
-                await databaseClient.Create(databaseDTO.DatabaseId, databaseDTO.Name, false);
-            }
-            catch (AppwriteException ex)
-            {
-                throw;
-            }
+            await databaseClient.Create(databaseDTO.DatabaseId, databaseDTO.Name, false);
         }
 
         public async Task DeleteDatabase(string databaseId)
         {
-            try
-            {
-                await databaseClient.Delete(databaseId);
-            }
-            catch (AppwriteException ex)
-            {
-                throw;
-            }
+            await databaseClient.Delete(databaseId);
         }
 
         /// <summary>
@@ -101,18 +87,18 @@ namespace AppwriteClient
         private async Task CreateCollectionAttributes(string databaseId, string collectionId, CollectionDTO collection)
         {
             var attributeMap = new Dictionary<Type, Func<Task>>
-    {
-        { typeof(StringAttribute), () => CreateAttribute(collection.StringAttributes, databaseId, collectionId) },
-        { typeof(EmailAttribute), () => CreateAttribute(collection.EmailAttributes, databaseId, collectionId) },
-        { typeof(EnumAttribute), () => CreateAttribute(collection.EnumAttributes, databaseId, collectionId) },
-        { typeof(IPAddressAttribute), () => CreateAttribute(collection.IPAddressAttributes, databaseId, collectionId) },
-        { typeof(URLAttribute), () => CreateAttribute(collection.URLAttributes, databaseId, collectionId) },
-        { typeof(IntegerAttribute), () => CreateAttribute(collection.IntegerAttributes, databaseId, collectionId) },
-        { typeof(FloatAttribute), () => CreateAttribute(collection.FloatAttributes, databaseId, collectionId) },
-        { typeof(BooleanAttribute), () => CreateAttribute(collection.BooleanAttributes, databaseId, collectionId) },
-        { typeof(DatetimeAttribute), () => CreateAttribute(collection.DatetimeAttributes, databaseId, collectionId) },
-        { typeof(RelationshipAttribute), () => CreateAttribute(collection.RelationshipAttributes, databaseId, collectionId) },
-    };
+            {
+                { typeof(StringAttribute), () => CreateAttribute(collection.StringAttributes, databaseId, collectionId) },
+                { typeof(EmailAttribute), () => CreateAttribute(collection.EmailAttributes, databaseId, collectionId) },
+                { typeof(EnumAttribute), () => CreateAttribute(collection.EnumAttributes, databaseId, collectionId) },
+                { typeof(IPAddressAttribute), () => CreateAttribute(collection.IPAddressAttributes, databaseId, collectionId) },
+                { typeof(URLAttribute), () => CreateAttribute(collection.URLAttributes, databaseId, collectionId) },
+                { typeof(IntegerAttribute), () => CreateAttribute(collection.IntegerAttributes, databaseId, collectionId) },
+                { typeof(FloatAttribute), () => CreateAttribute(collection.FloatAttributes, databaseId, collectionId) },
+                { typeof(BooleanAttribute), () => CreateAttribute(collection.BooleanAttributes, databaseId, collectionId) },
+                { typeof(DatetimeAttribute), () => CreateAttribute(collection.DatetimeAttributes, databaseId, collectionId) },
+                { typeof(RelationshipAttribute), () => CreateAttribute(collection.RelationshipAttributes, databaseId, collectionId) },
+            };
 
             foreach (var attributeType in attributeMap.Keys)
             {
