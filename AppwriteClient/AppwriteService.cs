@@ -23,6 +23,16 @@ namespace AppwriteClient
             databaseClient = new Databases(_client);
         }
 
+        public async Task CreateDatabase(DatabaseDTO databaseDTO)
+        {
+            await databaseClient.Create(databaseDTO.DatabaseId, databaseDTO.Name, false);
+        }
+
+        public async Task DeleteDatabase(string databaseId)
+        {
+            await databaseClient.Delete(databaseId);
+        }
+
         /// <summary>
         /// Retrieves a database by its ID.
         /// </summary>
@@ -64,61 +74,51 @@ namespace AppwriteClient
             foreach (var collection in collectionList)
             {
                 await databaseClient.CreateCollection(databaseId, collection.CollectionId, collection.Name);
-                await CreateCollectionAttributes(databaseId, collection.CollectionId, collection.StringAttributes, collection.EmailAttributes, collection.EnumAttributes, collection.IPAddressAttributes, collection.URLAttributes, collection.IntegerAttributes, collection.FloatAttributes, collection.BooleanAttributes, collection.DatetimeAttributes, collection.RelationshipAttributes);
+                await CreateCollectionAttributes(databaseId, collection.CollectionId, collection);
             }
         }
 
-        private async Task CreateCollectionAttributes(string databaseId, string collectionId, List<StringAttribute> stringAttributes, List<EmailAttribute> emailAttributes, List<EnumAttribute> enumAttributes, List<IPAddressAttribute> iPAddressAttributes, List<URLAttribute> uRLAttributes, List<IntegerAttribute> integerAttributes, List<FloatAttribute> floatAttributes, List<BooleanAttribute> booleanAttributes, List<DatetimeAttribute> datetimeAttributes, List<RelationshipAttribute> relationshipAttributes)
+        /// <summary>
+        /// Creates the attributes for a collection in the Appwrite database.
+        /// </summary>
+        /// <param name="databaseId">The ID of the database.</param>
+        /// <param name="collectionId">The ID of the collection.</param>
+        /// <param name="collection">The collection DTO object.</param>
+        private async Task CreateCollectionAttributes(string databaseId, string collectionId, CollectionDTO collection)
         {
-
-            if (stringAttributes != null && stringAttributes.Count > 0)
+            var attributeMap = new Dictionary<Type, Func<Task>>
             {
-                await CreateAttribute(stringAttributes, databaseId, collectionId);
-            }
+                { typeof(StringAttribute), () => CreateAttribute(collection.StringAttributes, databaseId, collectionId) },
+                { typeof(EmailAttribute), () => CreateAttribute(collection.EmailAttributes, databaseId, collectionId) },
+                { typeof(EnumAttribute), () => CreateAttribute(collection.EnumAttributes, databaseId, collectionId) },
+                { typeof(IPAddressAttribute), () => CreateAttribute(collection.IPAddressAttributes, databaseId, collectionId) },
+                { typeof(URLAttribute), () => CreateAttribute(collection.URLAttributes, databaseId, collectionId) },
+                { typeof(IntegerAttribute), () => CreateAttribute(collection.IntegerAttributes, databaseId, collectionId) },
+                { typeof(FloatAttribute), () => CreateAttribute(collection.FloatAttributes, databaseId, collectionId) },
+                { typeof(BooleanAttribute), () => CreateAttribute(collection.BooleanAttributes, databaseId, collectionId) },
+                { typeof(DatetimeAttribute), () => CreateAttribute(collection.DatetimeAttributes, databaseId, collectionId) },
+                { typeof(RelationshipAttribute), () => CreateAttribute(collection.RelationshipAttributes, databaseId, collectionId) },
+            };
 
-            if (emailAttributes != null && emailAttributes.Count > 0)
+            foreach (var attributeType in attributeMap.Keys)
             {
-                await CreateAttribute(emailAttributes, databaseId, collectionId);
-            }
+                // Get the properties of the collection object that are of type List<T>
+                var listProperties = collection.GetType().GetProperties()
+                    .Where(p => p.PropertyType.IsGenericType && p.PropertyType.GetGenericTypeDefinition() == typeof(List<>));
 
-            if (enumAttributes != null && enumAttributes.Count > 0)
-            {
-                await CreateAttribute(enumAttributes, databaseId, collectionId);
-            }
+                // Filter the properties to only those where the generic type argument is the current attribute type
+                var attributeListProperty = listProperties
+                    .Where(p => p.PropertyType.GenericTypeArguments[0] == attributeType)
+                    .FirstOrDefault();
 
-            if (iPAddressAttributes != null && iPAddressAttributes.Count > 0)
-            {
-                await CreateAttribute(iPAddressAttributes, databaseId, collectionId);
-            }
+                // Get the value of the property (which is a list of attribute objects)
+                var attributeList = attributeListProperty?.GetValue(collection) as IEnumerable<object>;
 
-            if (uRLAttributes != null && uRLAttributes.Count > 0)
-            {
-                await CreateAttribute(uRLAttributes, databaseId, collectionId);
-            }
-
-            if (integerAttributes != null && integerAttributes.Count > 0)
-            {
-                await CreateAttribute(integerAttributes, databaseId, collectionId);
-            }
-
-            if (floatAttributes != null && floatAttributes.Count > 0)
-            {
-                await CreateAttribute(floatAttributes, databaseId, collectionId);
-            }
-
-            if (booleanAttributes != null && booleanAttributes.Count > 0)
-            {
-                await CreateAttribute(booleanAttributes, databaseId, collectionId);
-            }
-
-            if (datetimeAttributes != null && datetimeAttributes.Count > 0)
-            {
-                await CreateAttribute(datetimeAttributes, databaseId, collectionId);
-            }
-
-            if (relationshipAttributes != null && relationshipAttributes.Count > 0)
-            {
-                await CreateAttribute(relationshipAttributes, databaseId, collectionId);
+                // If the list of attributes is not null or empty, create the attributes in the Appwrite database
+                if (attributeList != null && attributeList.Any())
+                {
+                    await attributeMap[attributeType]();
+                }
             }
         }
 

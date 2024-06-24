@@ -1,99 +1,91 @@
 ﻿using AppwriteClient;
 using AppwriteClient.DTOs;
-using Microsoft.Extensions.Configuration;
-// using Newtonsoft.Json;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using static AppwriteClient.DTOs.AttributeDTO;
 using Helpers;
 
 internal class Program
 {
     private static async Task Main(string[] args)
     {
-        bool skipConfirmation = CommandLineArgumentParser.HasArgument(args, "--skip-confirmation");
         string environmentName = CommandLineArgumentParser.GetArgumentValue(args, "--environment");
-
         ConfigurationHelper configHelper = new ConfigurationHelper(environmentName);
+        var databaseId = configHelper.GetSetting("DATABASE_ID");
 
-        if (!skipConfirmation)
+        if (string.IsNullOrEmpty(databaseId))
         {
-            var confirm = UserSelection.GetBooleanAnswer("Would you like to confirm application settings?");
-            if (confirm)
-            {
-                configHelper.PrintSettings();
-            }
+            Console.WriteLine("Database ID is not set in the app settings.");
+            Environment.Exit(1);
         }
-        else
-        {
-            Console.WriteLine("Skipping confirmation of application settings.");
-        }
+
+        var shouldConfirmSettings = UserSelection.GetBooleanAnswer("Would you like to confirm application settings?");
+
+        if (shouldConfirmSettings) configHelper.PrintSettings();
 
         AppwriteService appwriteService = new AppwriteService(configHelper.GetSettings());
 
-        var databaseId = configHelper.GetSetting("DATABASE_ID");
+        var databaseResponse = await appwriteService.GetDatabase(databaseId);
+        bool databaseExists = databaseResponse.Result is not null;
 
-        var continueResponse = UserSelection.GetBooleanAnswer($"Retrieve database '{databaseId}'?");
+        Console.WriteLine($"Database '{databaseId}' {(databaseExists ? "does" : "does not ")} exist");
 
-        if (!continueResponse)
+        string databasePrompt = $"Would you like to {(databaseExists ? "reset" : "create")} the database from the local schema definition?";
+        var shouldResetDatabase = UserSelection.GetBooleanAnswer(databasePrompt);
+
+        if (shouldResetDatabase)
         {
-            Environment.Exit(0);
+            if (databaseExists)
+            {
+                Console.WriteLine("Deleting existing database...");
+                await appwriteService.DeleteDatabase(databaseId);
+            }
+
+            try
+            {
+                string json = File.ReadAllText(Path.Combine("DDL", "housingsearch.json"));
+                SeedDatabaseDTO? seedDatabaseDTO = JsonSerializer.Deserialize<SeedDatabaseDTO>(json);
+
+                if (seedDatabaseDTO is null)
+                {
+                    throw new JsonException();
+                }
+
+                Console.WriteLine("Creating database...");
+                await appwriteService.CreateDatabase(new DatabaseDTO { DatabaseId = databaseId, Name = seedDatabaseDTO.DatabaseName });
+
+                Console.WriteLine("Creating collections...");
+                await appwriteService.CreateCollections(databaseId, seedDatabaseDTO.Collections);
+
+                databaseResponse = await appwriteService.GetDatabase(databaseId);
+                databaseExists = databaseResponse.Result is not null;
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("The housing search JSON file is not valid or present within the 'DDL' directory.");
+                Environment.Exit(1);
+            }
+            catch (JsonException)
+            {
+                Console.WriteLine("The housing search JSON file is not valid or present within the 'DDL' directory.");
+                Environment.Exit(1);
+            }
         }
 
-        var database = await ExecuteOrExitOnError(appwriteService.GetDatabase(databaseId), $"Database '{databaseId}' does not exist.");
-
-        var collectionList = await ExecuteOrExitOnError(appwriteService.GetCollections(database));
-
-        var collectionListCount = collectionList.Total;
-
-        if (collectionListCount == 0)
+        if (databaseExists)
         {
-            Console.WriteLine($"Database '{databaseId}' is empty.");
-            return;
+            var collectionListResponse = await appwriteService.GetCollections(databaseResponse.Result);
+            var collectionListCount = collectionListResponse.Result.Total;
+
+            Console.WriteLine($"Database '{databaseId}' has {collectionListCount} collection(s).");
+
+            var shouldOperateOnCollection = UserSelection.GetBooleanAnswer("Would you like to operate on a collection?");
+
+            if (!shouldOperateOnCollection) Environment.Exit(0);
+
+            var collectionNames = collectionListResponse.Result.Collections.Select(c => c.Name).ToList();
+
+            var selectedCollection = UserSelection.GetSelection(collectionNames, "Select a collection:");
+
+            Console.WriteLine($"You selected: {selectedCollection}");
         }
-
-        Console.WriteLine($"Database '{databaseId}' exists and has {collectionListCount} collection(s).");
-
-        var operateOnCollectionResponse = UserSelection.GetBooleanAnswer("Would you like to operate on a collection?");
-
-        if (!operateOnCollectionResponse)
-        {
-            return;
-        }
-
-        var collectionNames = collectionList.Collections.Select(c => c.Name).ToList();
-
-        var selectedCollection = UserSelection.GetSelection(collectionNames, "Select a collection:");
-
-        Console.WriteLine($"You selected: {selectedCollection}");
-
-        /*
-        * TODO: Validate that a database doesnt already exist
-        * TODO: Create Backup
-        * TODO: Create Database
-        * TODO: Create Collections and Attributes based on file schema
-        * TODO: Add logging for process
-        * TODO: Add required user prompts
-        * TODO: Write unit test for code
-        */
-    }
-
-    /// <summary>
-    /// Executes a task and exits the application if the task returns an error.
-    /// </summary>
-    /// <typeparam name="T">The type of the result returned by the task.</typeparam>
-    /// <param name="task">The task to be executed.</param>
-    /// <param name="exitMessage">The message to be displayed if the task returns an error. If not provided, a default error message will be displayed.</param>
-    /// <returns>The result of the task if it is executed successfully.</returns>
-    private static async Task<T> ExecuteOrExitOnError<T>(Task<DatabaseResponse<T>> task, string exitMessage = "")
-    {
-        var response = await task;
-        if (response.Error != null)
-        {
-            string message = string.IsNullOrEmpty(exitMessage) ? $"Error: {response.Error}" : exitMessage;
-            Console.WriteLine(message);
-            Environment.Exit(1);
-        }
-        return response.Result;
     }
 }

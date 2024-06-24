@@ -79,7 +79,9 @@ public class UserSelection
                 }
             }
 
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("Invalid input. Please enter 'y' for yes or 'n' for no.");
+            Console.ResetColor();
         }
     }
 }
