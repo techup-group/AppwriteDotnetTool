@@ -245,6 +245,7 @@ namespace AppwriteClient
             }
 
         }
+
         //public async Task GetDocuments(string databaseId, string collectionId)
         //{
         //    List<string> queries = new List<string>();
@@ -264,6 +265,21 @@ namespace AppwriteClient
         //    }
 
         //}
+
+        public async Task<Document> CreateDocument(string databaseId, string collectionId, object data, string? documentId = null)
+        {
+            string docId = documentId ?? ID.Unique();
+            try
+            {
+                var document = await databaseClient.CreateDocument(databaseId, collectionId, docId, data);
+                return document;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
     }
 
     /// <summary>

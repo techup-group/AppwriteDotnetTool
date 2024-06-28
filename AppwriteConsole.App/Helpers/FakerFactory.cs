@@ -16,7 +16,7 @@ public static class FakerFactory
       PetsAllowed = FakerBoolean.Random(),
       ParkingAvailable = FakerBoolean.Random(),
       AvailableDate = DateTime.Now.AddDays(RandomNumber.Next(0, 365)).ToString("yyyy-MM-dd"),
-      HousingType = new[] { "Apt", "House" }[RandomNumber.Next(0, 2)] // Randomly selects between "Apt" and "House"
+      HousingType = new[] { "Apt", "House" }[RandomNumber.Next(0, 1)] // Randomly selects between "Apt" and "House"
     };
 
     return listing;
