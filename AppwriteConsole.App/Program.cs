@@ -10,6 +10,7 @@ internal class Program
     {
         ConfigurationHelper configHelper = new ConfigurationHelper();
         AppwriteService appwriteService = new AppwriteService(configHelper.GetSettings());
+        DataGenerator dataGenerator = new DataGenerator(new FakerFactory());
 
         var databaseId = GetDatabaseIdOrExit(configHelper);
         var databaseResponse = await appwriteService.GetDatabase(databaseId);
@@ -20,6 +21,8 @@ internal class Program
         await PromptForDatabaseReset(databaseExists, databaseId, appwriteService, databaseResponse);
 
         await PromptForCollectionOperations(appwriteService, databaseId, databaseResponse);
+
+        string serializedPeople = dataGenerator.GetSerializedPeople(1);
     }
 
     private static string GetDatabaseIdOrExit(ConfigurationHelper configHelper)

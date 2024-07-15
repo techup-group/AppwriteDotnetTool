@@ -2,10 +2,11 @@ using Faker;
 using FakerBoolean = Faker.Boolean;
 using FakerAddress = Faker.Address;
 using Models;
+using Helpers;
 
-public static class FakerFactory
+public class FakerFactory : DataFactory
 {
-  public static Listing GetListing()
+  public Listing GetListing()
   {
     var listing = new Listing
     {
@@ -23,7 +24,7 @@ public static class FakerFactory
     return listing;
   }
 
-  public static Models.Address GetAddress()
+  public Models.Address GetAddress()
   {
     var address = new Models.Address
     {
@@ -39,7 +40,7 @@ public static class FakerFactory
     return address;
   }
 
-  public static Person GetPerson()
+  public Person GetPerson()
   {
     var person = new Person
     {
@@ -54,7 +55,7 @@ public static class FakerFactory
     return person;
   }
 
-  public static List<Person> GetPeople(int numberOfPeople)
+  public List<Person> GetPeople(int numberOfPeople)
   {
     List<Person> people = new List<Person>();
 
