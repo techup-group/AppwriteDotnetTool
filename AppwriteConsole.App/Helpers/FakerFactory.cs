@@ -5,7 +5,7 @@ using Models;
 
 public static class FakerFactory
 {
-  public static Listing GenerateListing()
+  public static Listing GetListing()
   {
     var listing = new Listing
     {
@@ -23,7 +23,7 @@ public static class FakerFactory
     return listing;
   }
 
-  public static Models.Address GenerateAddress()
+  public static Models.Address GetAddress()
   {
     var address = new Models.Address
     {
@@ -39,7 +39,7 @@ public static class FakerFactory
     return address;
   }
 
-  public static Person GeneratePerson()
+  public static Person GetPerson()
   {
     var person = new Person
     {
@@ -48,9 +48,21 @@ public static class FakerFactory
       Email = Internet.Email(),
       Phone = Phone.Number(),
       AccountId = Guid.NewGuid().ToString(),
-      AddressId = GenerateAddress()
+      AddressId = GetAddress()
     };
 
     return person;
+  }
+
+  public static List<Person> GetPeople(int numberOfPeople)
+  {
+    List<Person> people = new List<Person>();
+
+    for (int i = 0; i < numberOfPeople; i++)
+    {
+      people.Add(GetPerson());
+    }
+
+    return people;
   }
 }
