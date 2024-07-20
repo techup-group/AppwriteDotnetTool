@@ -17,4 +17,16 @@ class DataGenerator
     List<Person> people = this.DataFactory.GetPeople(numberOfPeople);
     return JsonSerializer.Serialize(people);
   }
+
+  public string GetSerializedPerson()
+  {
+    Person person = this.DataFactory.GetPerson();
+    return JsonSerializer.Serialize(person);
+  }
+
+  public string GetSerializedAddress()
+  {
+    Address address = this.DataFactory.GetAddress();
+    return JsonSerializer.Serialize(address);
+  }
 }
