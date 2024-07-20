@@ -280,6 +280,20 @@ namespace AppwriteClient
                 throw;
             }
         }
+
+        public async Task<Document> UpdateDocument(string databaseId, string collectionId, string documentId, object data)
+        {
+            try
+            {
+                var document = await databaseClient.UpdateDocument(databaseId, collectionId, documentId, data);
+                return document;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
     }
 
     /// <summary>
