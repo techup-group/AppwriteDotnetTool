@@ -231,11 +231,11 @@ namespace AppwriteClient
             return collectionList;
         }
 
-        public async Task<DocumentList> GetDocuments(string databaseId, string collectionId)
+        public async Task<DocumentList> GetDocuments(string databaseId, string collectionId, List<string> queries)
         {
             try
             {
-                var documents = await databaseClient.ListDocuments(databaseId, collectionId);
+                var documents = await databaseClient.ListDocuments(databaseId, collectionId, queries);
                 return documents;
             }
             catch (Exception ex)
