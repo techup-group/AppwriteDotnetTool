@@ -231,7 +231,7 @@ namespace AppwriteClient
             return collectionList;
         }
 
-        public async Task<DocumentList> GetDocuments(string databaseId, string collectionId, List<string> queries)
+        public async Task<DocumentList> GetDocuments(string databaseId, string collectionId, List<string>? queries = null)
         {
             try
             {

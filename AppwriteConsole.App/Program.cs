@@ -3,6 +3,9 @@ using AppwriteClient.DTOs;
 using System.Text.Json;
 using Helpers;
 using Models;
+using Appwrite;
+using NewtJson = Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 internal class Program
 {
@@ -18,11 +21,20 @@ internal class Program
 
         Console.WriteLine($"Database '{databaseId}' {(databaseExists ? "does" : "does not ")} exist");
 
-        await PromptForDatabaseReset(databaseExists, databaseId, appwriteService, databaseResponse);
+        // await PromptForDatabaseReset(databaseExists, databaseId, appwriteService, databaseResponse);
 
-        await PromptForCollectionOperations(appwriteService, databaseId, databaseResponse);
+        // await PromptForCollectionOperations(appwriteService, databaseId, databaseResponse);
 
-        string serializedPeople = dataGenerator.GetSerializedPeople(1);
+        // string serializedPerson = dataGenerator.GetSerializedPerson();
+
+        // await appwriteService.CreateDocument(databaseId, "person", serializedPerson);
+
+        var people = await appwriteService.GetDocuments(databaseId, "person");
+        // var people = await appwriteService.GetDocuments(databaseId, "person", new List<string> { Query.Select(new List<string> { "AddressId" }) });
+        foreach (var person in people.Documents)
+        {
+            Person p = person.ConvertTo<Person>(Person.FromJson);
+        }
     }
 
     private static string GetDatabaseIdOrExit(ConfigurationHelper configHelper)
