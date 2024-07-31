@@ -40,4 +40,14 @@ class DataGenerator
     };
     return JsonSerializer.Serialize(listing, options);
   }
+
+  public string GetSerializedUser()
+  {
+    User user = this.DataFactory.GetUser();
+    var options = new JsonSerializerOptions
+    {
+      Converters = { new JsonStringEnumConverter() },
+    };
+    return JsonSerializer.Serialize(user, options);
+  }
 }
