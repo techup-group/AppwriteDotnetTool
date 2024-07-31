@@ -13,12 +13,12 @@ public class FakerFactory : DataFactory
       Title = Lorem.Sentence(3),
       Description = Lorem.Paragraph(2),
       Location = FakerAddress.City(),
-      Price = RandomNumber.Next(0, 10001), // Assuming Price is an integer
-      Bedrooms = RandomNumber.Next(1, 11), // Assuming Bedrooms is an integer
+      Price = RandomNumber.Next(0, 10001),
+      Bedrooms = RandomNumber.Next(1, 11),
       PetsAllowed = FakerBoolean.Random(),
       ParkingAvailable = FakerBoolean.Random(),
-      AvailableDate = DateTime.Now.AddDays(RandomNumber.Next(0, 365)).ToString("yyyy-MM-dd"),
-      HousingType = new[] { "Apt", "House" }[RandomNumber.Next(0, 1)] // Randomly selects between "Apt" and "House"
+      AvailableDate = DateTime.Now.AddDays(RandomNumber.Next(0, 365)),
+      HousingType = (HousingType)RandomNumber.Next(0, 1) // Randomly selects between "Apt" and "House"
     };
 
     return listing;

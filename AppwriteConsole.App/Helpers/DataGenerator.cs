@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Models;
 
 namespace Helpers;
@@ -28,5 +29,15 @@ class DataGenerator
   {
     Address address = this.DataFactory.GetAddress();
     return JsonSerializer.Serialize(address);
+  }
+
+  public string GetSerializedListing()
+  {
+    Listing listing = this.DataFactory.GetListing();
+    var options = new JsonSerializerOptions
+    {
+      Converters = { new JsonStringEnumConverter() },
+    };
+    return JsonSerializer.Serialize(listing, options);
   }
 }
