@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Models;
 
 public class Address
@@ -9,4 +11,10 @@ public class Address
   public string State { get; set; }
   public string Zip { get; set; }
   public string County { get; set; }
+  public static Address FromJson(Dictionary<string, object> data)
+  {
+    string json = JsonConvert.SerializeObject(data);
+    Address address = JsonConvert.DeserializeObject<Address>(json);
+    return address;
+  }
 }

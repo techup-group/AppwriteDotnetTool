@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Models
 {
   public class Listing
@@ -11,6 +13,13 @@ namespace Models
     public bool ParkingAvailable { get; set; }
     public DateTime AvailableDate { get; set; }
     public HousingType HousingType { get; set; }
+
+    public static Listing FromJson(Dictionary<string, object> data)
+    {
+      string json = JsonConvert.SerializeObject(data);
+      Listing listing = JsonConvert.DeserializeObject<Listing>(json);
+      return listing;
+    }
   }
 }
 
