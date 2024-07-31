@@ -9,7 +9,13 @@ namespace Models
     public int Bedrooms { get; set; }
     public bool PetsAllowed { get; set; }
     public bool ParkingAvailable { get; set; }
-    public string AvailableDate { get; set; }
-    public string HousingType { get; set; }
+    public DateTime AvailableDate { get; set; }
+    public HousingType HousingType { get; set; }
   }
+}
+
+public enum HousingType
+{
+  Apt,
+  House,
 }
