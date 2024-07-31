@@ -66,4 +66,17 @@ public class FakerFactory : DataFactory
 
     return people;
   }
+
+  public User GetUser()
+  {
+    User user = new User
+    {
+      FirstName = Name.First(),
+      LastName = Name.Last(),
+      Email = Internet.Email(),
+      Listings = new List<Listing>()
+    };
+    user.Listings.Add(GetListing());
+    return user;
+  }
 }
