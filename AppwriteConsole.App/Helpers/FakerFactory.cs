@@ -24,6 +24,18 @@ public class FakerFactory : DataFactory
     return listing;
   }
 
+  public List<Listing> GetListings(int numberOfListings)
+  {
+    List<Listing> listings = new List<Listing>();
+
+    for (int i = 0; i < numberOfListings; i++)
+    {
+      listings.Add(GetListing());
+    }
+
+    return listings;
+  }
+
   public Models.Address GetAddress()
   {
     var address = new Models.Address
@@ -38,6 +50,18 @@ public class FakerFactory : DataFactory
     };
 
     return address;
+  }
+
+  public List<Models.Address> GetAddresses(int numberOfAddresses)
+  {
+    List<Models.Address> addresses = new List<Models.Address>();
+
+    for (int i = 0; i < numberOfAddresses; i++)
+    {
+      addresses.Add(GetAddress());
+    }
+
+    return addresses;
   }
 
   public Person GetPerson()
@@ -79,4 +103,16 @@ public class FakerFactory : DataFactory
     user.Listings.Add(GetListing());
     return user;
   }
+  public List<User> GetUsers(int numberOfUsers)
+  {
+    List<User> users = new List<User>();
+
+    for (int i = 0; i < numberOfUsers; i++)
+    {
+      users.Add(GetUser());
+    }
+
+    return users;
+  }
+
 }
