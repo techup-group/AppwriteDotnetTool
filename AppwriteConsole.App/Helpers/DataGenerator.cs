@@ -28,26 +28,30 @@ class DatabaseSeeder
     List<Task> tasks = new();
     foreach (Person person in people)
     {
-      string personJson = JsonSerializer.Serialize(person);
-      tasks.Add(_appwriteService.CreateDocument(_databaseId, _personCollectionId, personJson));
+      Task task = SerializeAndCreate(person, _personCollectionId);
+      tasks.Add(task);
     }
     await Task.WhenAll(tasks);
     return people;
   }
 
+  private Task<Appwrite.Models.Document> SerializeAndCreate(object item, string collectionId, JsonSerializerOptions? serializationOptions = null)
+  {
+    string itemJson = JsonSerializer.Serialize(item, serializationOptions);
+    return _appwriteService.CreateDocument(_databaseId, collectionId, itemJson);
+  }
+
   public async Task<Person> SeedPerson()
   {
     Person person = _dataFactory.GetPerson();
-    string personJson = JsonSerializer.Serialize(person);
-    await _appwriteService.CreateDocument(_databaseId, _personCollectionId, personJson);
+    await SerializeAndCreate(person, _personCollectionId);
     return person;
   }
 
   public async Task<Address> SeedAddress()
   {
     Address address = _dataFactory.GetAddress();
-    string addressJson = JsonSerializer.Serialize(address);
-    await _appwriteService.CreateDocument(_databaseId, _addressCollectionId, addressJson);
+    await SerializeAndCreate(address, _addressCollectionId);
     return address;
   }
 
@@ -58,8 +62,7 @@ class DatabaseSeeder
     {
       Converters = { new JsonStringEnumConverter() },
     };
-    string listingJson = JsonSerializer.Serialize(listing, options);
-    await _appwriteService.CreateDocument(_databaseId, _listingCollectionId, listingJson);
+    await SerializeAndCreate(listing, _listingCollectionId, options);
     return listing;
   }
 
@@ -70,8 +73,7 @@ class DatabaseSeeder
     {
       Converters = { new JsonStringEnumConverter() },
     };
-    string userJson = JsonSerializer.Serialize(user, options);
-    await _appwriteService.CreateDocument(_databaseId, _userCollectionId, userJson);
+    await SerializeAndCreate(user, _userCollectionId, options);
     return user;
   }
 
@@ -85,8 +87,8 @@ class DatabaseSeeder
       {
         Converters = { new JsonStringEnumConverter() },
       };
-      string userJson = JsonSerializer.Serialize(user, options);
-      tasks.Add(_appwriteService.CreateDocument(_databaseId, _userCollectionId, userJson));
+      Task task = SerializeAndCreate(user, _userCollectionId, options);
+      tasks.Add(task);
     }
     await Task.WhenAll(tasks);
     return users;
