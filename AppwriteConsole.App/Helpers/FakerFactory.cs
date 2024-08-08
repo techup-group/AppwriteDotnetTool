@@ -98,11 +98,13 @@ public class FakerFactory : DataFactory
       FirstName = Name.First(),
       LastName = Name.Last(),
       Email = Internet.Email(),
-      Listings = new List<Listing>()
     };
-    user.Listings.Add(GetListing());
+    int numberOfListings = RandomNumber.Next(0, 3);
+    List<Listing> listings = GetListings(numberOfListings);
+    user.Listings = listings;
     return user;
   }
+
   public List<User> GetUsers(int numberOfUsers)
   {
     List<User> users = new List<User>();
