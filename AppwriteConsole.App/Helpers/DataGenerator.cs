@@ -74,4 +74,31 @@ class DatabaseSeeder
     await _appwriteService.CreateDocument(_databaseId, _userCollectionId, userJson);
     return user;
   }
+
+  public async Task<List<User>> SeedUsers(int numberOfUsers)
+  {
+    List<User> users = _dataFactory.GetUsers(numberOfUsers);
+    List<Task> tasks = new();
+    foreach (User user in users)
+    {
+      var options = new JsonSerializerOptions
+      {
+        Converters = { new JsonStringEnumConverter() },
+      };
+      string userJson = JsonSerializer.Serialize(user, options);
+      tasks.Add(_appwriteService.CreateDocument(_databaseId, _userCollectionId, userJson));
+    }
+    await Task.WhenAll(tasks);
+    return users;
+  }
+
+  public async Task<Dictionary<string, object>> SeedCollections(int numberOfRecords)
+  {
+    Dictionary<string, object> collectionItems = new()
+    {
+        { _personCollectionId, await SeedPeople(numberOfRecords) },
+        { _userCollectionId, await SeedUsers(numberOfRecords) }
+    };
+    return collectionItems;
+  }
 }
