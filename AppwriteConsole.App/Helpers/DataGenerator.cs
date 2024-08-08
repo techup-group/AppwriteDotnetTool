@@ -1,53 +1,77 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using AppwriteClient;
 using Models;
 
 namespace Helpers;
 
-class DataGenerator
+class DatabaseSeeder
 {
-  private DataFactory DataFactory;
+  private DataFactory _dataFactory;
+  private AppwriteService _appwriteService;
+  private string _databaseId;
+  private string _personCollectionId = "person";
+  private string _addressCollectionId = "address";
+  private string _listingCollectionId = "listings";
+  private string _userCollectionId = "users";
 
-  public DataGenerator(DataFactory dataFactory)
+  public DatabaseSeeder(DataFactory dataFactory, AppwriteService appwriteService, string databaseId)
   {
-    this.DataFactory = dataFactory;
+    _dataFactory = dataFactory;
+    _appwriteService = appwriteService;
+    _databaseId = databaseId;
   }
 
-  public string GetSerializedPeople(int numberOfPeople)
+  public async Task<List<Person>> SeedPeople(int numberOfPeople)
   {
-    List<Person> people = this.DataFactory.GetPeople(numberOfPeople);
-    return JsonSerializer.Serialize(people);
+    List<Person> people = _dataFactory.GetPeople(numberOfPeople);
+    List<Task> tasks = new();
+    foreach (Person person in people)
+    {
+      string personJson = JsonSerializer.Serialize(person);
+      tasks.Add(_appwriteService.CreateDocument(_databaseId, _personCollectionId, personJson));
+    }
+    await Task.WhenAll(tasks);
+    return people;
   }
 
-  public string GetSerializedPerson()
+  public async Task<Person> SeedPerson()
   {
-    Person person = this.DataFactory.GetPerson();
-    return JsonSerializer.Serialize(person);
+    Person person = _dataFactory.GetPerson();
+    string personJson = JsonSerializer.Serialize(person);
+    await _appwriteService.CreateDocument(_databaseId, _personCollectionId, personJson);
+    return person;
   }
 
-  public string GetSerializedAddress()
+  public async Task<Address> SeedAddress()
   {
-    Address address = this.DataFactory.GetAddress();
-    return JsonSerializer.Serialize(address);
+    Address address = _dataFactory.GetAddress();
+    string addressJson = JsonSerializer.Serialize(address);
+    await _appwriteService.CreateDocument(_databaseId, _addressCollectionId, addressJson);
+    return address;
   }
 
-  public string GetSerializedListing()
+  public async Task<Listing> SeedListing()
   {
-    Listing listing = this.DataFactory.GetListing();
+    Listing listing = _dataFactory.GetListing();
     var options = new JsonSerializerOptions
     {
       Converters = { new JsonStringEnumConverter() },
     };
-    return JsonSerializer.Serialize(listing, options);
+    string listingJson = JsonSerializer.Serialize(listing, options);
+    await _appwriteService.CreateDocument(_databaseId, _listingCollectionId, listingJson);
+    return listing;
   }
 
-  public string GetSerializedUser()
+  public async Task<User> SeedUser()
   {
-    User user = this.DataFactory.GetUser();
+    User user = this._dataFactory.GetUser();
     var options = new JsonSerializerOptions
     {
       Converters = { new JsonStringEnumConverter() },
     };
-    return JsonSerializer.Serialize(user, options);
+    string userJson = JsonSerializer.Serialize(user, options);
+    await _appwriteService.CreateDocument(_databaseId, _userCollectionId, userJson);
+    return user;
   }
 }

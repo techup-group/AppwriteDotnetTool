@@ -1,4 +1,3 @@
-using Appwrite.Models;
 using Models;
 
 namespace Helpers;
@@ -11,6 +10,6 @@ public interface DataFactory
   List<Address> GetAddresses(int numberOfAddresses);
   Person GetPerson();
   List<Person> GetPeople(int numberOfPeople);
-  Models.User GetUser();
-  List<Models.User> GetUsers(int numberOfUsers);
+  User GetUser();
+  List<User> GetUsers(int numberOfUsers);
 }
