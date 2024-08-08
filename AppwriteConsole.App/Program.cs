@@ -3,9 +3,6 @@ using AppwriteClient.DTOs;
 using System.Text.Json;
 using Helpers;
 using Models;
-using Appwrite;
-using NewtJson = Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 internal class Program
 {
@@ -13,28 +10,17 @@ internal class Program
     {
         ConfigurationHelper configHelper = new ConfigurationHelper();
         AppwriteService appwriteService = new AppwriteService(configHelper.GetSettings());
-        DataGenerator dataGenerator = new DataGenerator(new FakerFactory());
-
         var databaseId = GetDatabaseIdOrExit(configHelper);
         var databaseResponse = await appwriteService.GetDatabase(databaseId);
         bool databaseExists = databaseResponse.Result is not null;
 
         Console.WriteLine($"Database '{databaseId}' {(databaseExists ? "does" : "does not ")} exist");
 
-        // await PromptForDatabaseReset(databaseExists, databaseId, appwriteService, databaseResponse);
+        await PromptForDatabaseReset(databaseExists, databaseId, appwriteService, databaseResponse);
 
-        // await PromptForCollectionOperations(appwriteService, databaseId, databaseResponse);
+        DatabaseSeeder dbSeeder = new DatabaseSeeder(new FakerFactory(), appwriteService, databaseId);
 
-        // string serializedPerson = dataGenerator.GetSerializedPerson();
-
-        // await appwriteService.CreateDocument(databaseId, "person", serializedPerson);
-
-        var people = await appwriteService.GetDocuments(databaseId, "person");
-        // var people = await appwriteService.GetDocuments(databaseId, "person", new List<string> { Query.Select(new List<string> { "AddressId" }) });
-        foreach (var person in people.Documents)
-        {
-            Person p = person.ConvertTo<Person>(Person.FromJson);
-        }
+        await dbSeeder.SeedCollections(3);
     }
 
     private static string GetDatabaseIdOrExit(ConfigurationHelper configHelper)
