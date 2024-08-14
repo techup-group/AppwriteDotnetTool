@@ -5,6 +5,10 @@ using Models;
 
 namespace Helpers;
 
+/// <summary>
+/// The <c>DatabaseSeeder</c> class is responsible for seeding various collections in the database.
+/// It uses a <see cref="DataFactory"/> to generate data and an <see cref="AppwriteService"/> to interact with the Appwrite backend.
+/// </summary>
 class DatabaseSeeder
 {
   private DataFactory _dataFactory;
@@ -15,6 +19,12 @@ class DatabaseSeeder
   private string _listingCollectionId = "listings";
   private string _userCollectionId = "users";
 
+  /// <summary>
+  /// Initializes a new instance of the <see cref="DatabaseSeeder"/> class.
+  /// </summary>
+  /// <param name="dataFactory">The data factory used to generate data.</param>
+  /// <param name="appwriteService">The Appwrite service used to interact with the backend.</param>
+  /// <param name="databaseId">The ID of the database to seed.</param>
   public DatabaseSeeder(DataFactory dataFactory, AppwriteService appwriteService, string databaseId)
   {
     _dataFactory = dataFactory;
