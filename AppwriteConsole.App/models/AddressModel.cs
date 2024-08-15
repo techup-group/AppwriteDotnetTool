@@ -4,13 +4,13 @@ namespace Models;
 
 public class Address
 {
-  public string Id { get; set; }
-  public string StreetAddress1 { get; set; }
-  public string? StreetAddress2 { get; set; }
-  public string City { get; set; }
-  public string State { get; set; }
-  public string Zip { get; set; }
-  public string County { get; set; }
+  public string Id { get; set; } = string.Empty;
+  public string StreetAddress1 { get; set; } = string.Empty;
+  public string? StreetAddress2 { get; set; } = string.Empty;
+  public string City { get; set; } = string.Empty;
+  public string State { get; set; } = string.Empty;
+  public string Zip { get; set; } = string.Empty;
+  public string County { get; set; } = string.Empty;
   public static Address FromJson(Dictionary<string, object> data)
   {
     string json = JsonConvert.SerializeObject(data);

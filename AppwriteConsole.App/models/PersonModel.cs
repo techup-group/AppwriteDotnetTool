@@ -6,12 +6,12 @@ namespace Models;
 
 public class Person
 {
-  public string FirstName { get; set; }
-  public string LastName { get; set; }
-  public string Email { get; set; }
-  public string Phone { get; set; }
-  public string AccountId { get; set; }
-  public Address AddressId { get; set; }
+  public string FirstName { get; set; } = string.Empty;
+  public string LastName { get; set; } = string.Empty;
+  public string Email { get; set; } = string.Empty;
+  public string Phone { get; set; } = string.Empty;
+  public string AccountId { get; set; } = string.Empty;
+  public Address? AddressId { get; set; }
   public static Person FromJson(Dictionary<string, object> data)
   {
     string json = JsonConvert.SerializeObject(data);
