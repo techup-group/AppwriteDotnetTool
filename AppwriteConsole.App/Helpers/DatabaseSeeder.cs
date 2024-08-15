@@ -12,7 +12,7 @@ namespace Helpers;
 public class DatabaseSeeder
 {
   private IDataFactory _dataFactory;
-  private AppwriteService _appwriteService;
+  private IBackendService _appwriteService;
   private string _databaseId;
   private string _personCollectionId = "person";
   private string _addressCollectionId = "address";
@@ -25,7 +25,7 @@ public class DatabaseSeeder
   /// <param name="dataFactory">The data factory used to generate data.</param>
   /// <param name="appwriteService">The Appwrite service used to interact with the backend.</param>
   /// <param name="databaseId">The ID of the database to seed.</param>
-  public DatabaseSeeder(IDataFactory dataFactory, AppwriteService appwriteService, string databaseId)
+  public DatabaseSeeder(IDataFactory dataFactory, IBackendService appwriteService, string databaseId)
   {
     _dataFactory = dataFactory;
     _appwriteService = appwriteService;
@@ -45,7 +45,7 @@ public class DatabaseSeeder
     return people;
   }
 
-  private Task<Appwrite.Models.Document> SerializeAndCreate(object item, string collectionId, JsonSerializerOptions? serializationOptions = null)
+  private Task<object> SerializeAndCreate(object item, string collectionId, JsonSerializerOptions? serializationOptions = null)
   {
     string itemJson = JsonSerializer.Serialize(item, serializationOptions);
     return _appwriteService.CreateDocument(_databaseId, collectionId, itemJson);
