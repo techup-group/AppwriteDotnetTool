@@ -4,7 +4,8 @@ using FakerAddress = Faker.Address;
 using Models;
 using Helpers;
 
-public class FakerFactory : DataFactory
+namespace Helpers;
+public class FakerFactory : IDataFactory
 {
   public Listing GetListing()
   {

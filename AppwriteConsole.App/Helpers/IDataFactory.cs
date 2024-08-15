@@ -2,7 +2,7 @@ using Models;
 
 namespace Helpers;
 
-public interface DataFactory
+public interface IDataFactory
 {
   Listing GetListing();
   List<Listing> GetListings(int numberOfListings);

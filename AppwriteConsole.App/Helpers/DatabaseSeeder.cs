@@ -7,11 +7,11 @@ namespace Helpers;
 
 /// <summary>
 /// The <c>DatabaseSeeder</c> class is responsible for seeding various collections in the database.
-/// It uses a <see cref="DataFactory"/> to generate data and an <see cref="AppwriteService"/> to interact with the Appwrite backend.
+/// It uses a <see cref="IDataFactory"/> to generate data and an <see cref="AppwriteService"/> to interact with the Appwrite backend.
 /// </summary>
-class DatabaseSeeder
+public class DatabaseSeeder
 {
-  private DataFactory _dataFactory;
+  private IDataFactory _dataFactory;
   private AppwriteService _appwriteService;
   private string _databaseId;
   private string _personCollectionId = "person";
@@ -25,7 +25,7 @@ class DatabaseSeeder
   /// <param name="dataFactory">The data factory used to generate data.</param>
   /// <param name="appwriteService">The Appwrite service used to interact with the backend.</param>
   /// <param name="databaseId">The ID of the database to seed.</param>
-  public DatabaseSeeder(DataFactory dataFactory, AppwriteService appwriteService, string databaseId)
+  public DatabaseSeeder(IDataFactory dataFactory, AppwriteService appwriteService, string databaseId)
   {
     _dataFactory = dataFactory;
     _appwriteService = appwriteService;
