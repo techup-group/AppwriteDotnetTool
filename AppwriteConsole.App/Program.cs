@@ -18,7 +18,7 @@ internal class Program
 
         await PromptForDatabaseReset(databaseExists, databaseId, appwriteService, databaseResponse);
 
-        DatabaseSeeder dbSeeder = new DatabaseSeeder(new FakerFactory(), appwriteService, databaseId);
+        DatabaseSeeder dbSeeder = new DatabaseSeeder(new FakerFactory(), new AppwriteServiceWrapper(appwriteService), databaseId);
 
         await dbSeeder.SeedCollections(3);
     }
