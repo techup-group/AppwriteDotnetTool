@@ -7,115 +7,115 @@ using Helpers;
 namespace Helpers;
 public class FakerFactory : IDataFactory
 {
-  public Listing GetListing()
-  {
-    var listing = new Listing
+    public Listing GetListing()
     {
-      Title = Lorem.Sentence(3),
-      Description = Lorem.Paragraph(2),
-      Location = FakerAddress.City(),
-      Price = RandomNumber.Next(0, 1000000),
-      Bedrooms = RandomNumber.Next(1, 10),
-      PetsAllowed = FakerBoolean.Random(),
-      ParkingAvailable = FakerBoolean.Random(),
-      AvailableDate = DateTime.Now.AddDays(RandomNumber.Next(0, 365)),
-      HousingType = (HousingType)RandomNumber.Next(0, 1) // Randomly selects between "Apt" and "House"
-    };
+        var listing = new Listing
+        {
+            Title = Lorem.Sentence(3),
+            Description = Lorem.Paragraph(2),
+            Location = FakerAddress.City(),
+            Price = RandomNumber.Next(0, 1000000),
+            Bedrooms = RandomNumber.Next(1, 10),
+            PetsAllowed = FakerBoolean.Random(),
+            ParkingAvailable = FakerBoolean.Random(),
+            AvailableDate = DateTime.Now.AddDays(RandomNumber.Next(0, 365)),
+            HousingType = (HousingType)RandomNumber.Next(0, 1) // Randomly selects between "Apt" and "House"
+        };
 
-    return listing;
-  }
-
-  public List<Listing> GetListings(int numberOfListings)
-  {
-    List<Listing> listings = new List<Listing>();
-
-    for (int i = 0; i < numberOfListings; i++)
-    {
-      listings.Add(GetListing());
+        return listing;
     }
 
-    return listings;
-  }
-
-  public Models.Address GetAddress()
-  {
-    var address = new Models.Address
+    public List<Listing> GetListings(int numberOfListings)
     {
-      Id = Guid.NewGuid().ToString(),
-      StreetAddress1 = FakerAddress.StreetAddress(),
-      StreetAddress2 = RandomNumber.Next(0, 1) == 0 ? FakerAddress.SecondaryAddress() : null,
-      City = FakerAddress.City(),
-      State = FakerAddress.UsState(),
-      Zip = FakerAddress.ZipCode(),
-      County = FakerAddress.UkCounty(),
-    };
+        List<Listing> listings = new List<Listing>();
 
-    return address;
-  }
+        for (int i = 0; i < numberOfListings; i++)
+        {
+            listings.Add(GetListing());
+        }
 
-  public List<Models.Address> GetAddresses(int numberOfAddresses)
-  {
-    List<Models.Address> addresses = new List<Models.Address>();
-
-    for (int i = 0; i < numberOfAddresses; i++)
-    {
-      addresses.Add(GetAddress());
+        return listings;
     }
 
-    return addresses;
-  }
-
-  public Person GetPerson()
-  {
-    var person = new Person
+    public Models.Address GetAddress()
     {
-      FirstName = Name.First(),
-      LastName = Name.Last(),
-      Email = Internet.Email(),
-      Phone = Phone.Number(),
-      AccountId = Guid.NewGuid().ToString(),
-      AddressId = GetAddress()
-    };
+        var address = new Models.Address
+        {
+            Id = Guid.NewGuid().ToString(),
+            StreetAddress1 = FakerAddress.StreetAddress(),
+            StreetAddress2 = RandomNumber.Next(0, 1) == 0 ? FakerAddress.SecondaryAddress() : null,
+            City = FakerAddress.City(),
+            State = FakerAddress.UsState(),
+            Zip = FakerAddress.ZipCode(),
+            County = FakerAddress.UkCounty(),
+        };
 
-    return person;
-  }
-
-  public List<Person> GetPeople(int numberOfPeople)
-  {
-    List<Person> people = new List<Person>();
-
-    for (int i = 0; i < numberOfPeople; i++)
-    {
-      people.Add(GetPerson());
+        return address;
     }
 
-    return people;
-  }
-
-  public User GetUser()
-  {
-    User user = new User
+    public List<Models.Address> GetAddresses(int numberOfAddresses)
     {
-      FirstName = Name.First(),
-      LastName = Name.Last(),
-      Email = Internet.Email(),
-    };
-    int numberOfListings = RandomNumber.Next(0, 3);
-    List<Listing> listings = GetListings(numberOfListings);
-    user.Listings = listings;
-    return user;
-  }
+        List<Models.Address> addresses = new List<Models.Address>();
 
-  public List<User> GetUsers(int numberOfUsers)
-  {
-    List<User> users = new List<User>();
+        for (int i = 0; i < numberOfAddresses; i++)
+        {
+            addresses.Add(GetAddress());
+        }
 
-    for (int i = 0; i < numberOfUsers; i++)
-    {
-      users.Add(GetUser());
+        return addresses;
     }
 
-    return users;
-  }
+    public Person GetPerson()
+    {
+        var person = new Person
+        {
+            FirstName = Name.First(),
+            LastName = Name.Last(),
+            Email = Internet.Email(),
+            Phone = Phone.Number(),
+            AccountId = Guid.NewGuid().ToString(),
+            AddressId = GetAddress()
+        };
+
+        return person;
+    }
+
+    public List<Person> GetPeople(int numberOfPeople)
+    {
+        List<Person> people = new List<Person>();
+
+        for (int i = 0; i < numberOfPeople; i++)
+        {
+            people.Add(GetPerson());
+        }
+
+        return people;
+    }
+
+    public User GetUser()
+    {
+        User user = new User
+        {
+            FirstName = Name.First(),
+            LastName = Name.Last(),
+            Email = Internet.Email(),
+        };
+        int numberOfListings = RandomNumber.Next(0, 3);
+        List<Listing> listings = GetListings(numberOfListings);
+        user.Listings = listings;
+        return user;
+    }
+
+    public List<User> GetUsers(int numberOfUsers)
+    {
+        List<User> users = new List<User>();
+
+        for (int i = 0; i < numberOfUsers; i++)
+        {
+            users.Add(GetUser());
+        }
+
+        return users;
+    }
 
 }
