@@ -49,6 +49,9 @@ internal class Program
 
         try
         {
+            string appPath = Directory.GetCurrentDirectory();
+            string projectPath = Directory.GetParent(appPath).Parent.Parent.FullName;
+            Directory.SetCurrentDirectory($"{projectPath}");
             string json = File.ReadAllText(Path.Combine("DDL", "housingsearch.json"));
             SeedDatabaseDTO? seedDatabaseDTO = JsonSerializer.Deserialize<SeedDatabaseDTO>(json);
 
