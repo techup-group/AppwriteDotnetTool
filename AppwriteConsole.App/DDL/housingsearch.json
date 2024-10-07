@@ -111,7 +111,7 @@
           "Type": "oneToOne",
           "TwoWay": false,
           "Key": "AddressId",
-          "TwoWayKey": "Id",
+          "TwoWayKey": null,
           "OnDelete": "cascade"
         }
       ]

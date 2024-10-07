@@ -231,11 +231,11 @@ namespace AppwriteClient
             return collectionList;
         }
 
-        public async Task<DocumentList> GetDocuments(string databaseId, string collectionId)
+        public async Task<DocumentList> GetDocuments(string databaseId, string collectionId, List<string>? queries = null)
         {
             try
             {
-                var documents = await databaseClient.ListDocuments(databaseId, collectionId);
+                var documents = await databaseClient.ListDocuments(databaseId, collectionId, queries);
                 return documents;
             }
             catch (Exception ex)
@@ -245,6 +245,7 @@ namespace AppwriteClient
             }
 
         }
+
         //public async Task GetDocuments(string databaseId, string collectionId)
         //{
         //    List<string> queries = new List<string>();
@@ -264,6 +265,35 @@ namespace AppwriteClient
         //    }
 
         //}
+
+        public async Task<Document> CreateDocument(string databaseId, string collectionId, object data, string? documentId = null)
+        {
+            string docId = documentId ?? ID.Unique();
+            try
+            {
+                var document = await databaseClient.CreateDocument(databaseId, collectionId, docId, data);
+                return document;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public async Task<Document> UpdateDocument(string databaseId, string collectionId, string documentId, object data)
+        {
+            try
+            {
+                var document = await databaseClient.UpdateDocument(databaseId, collectionId, documentId, data);
+                return document;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
     }
 
     /// <summary>
